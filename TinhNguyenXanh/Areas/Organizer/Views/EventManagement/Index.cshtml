@@ -1,0 +1,776 @@
+﻿@model IEnumerable<TinhNguyenXanh.DTOs.EventDTO>
+@{
+    ViewData["Title"] = "Quản lý sự kiện";
+    Layout = "~/Areas/Organizer/Views/Shared/_OrganizationLayout.cshtml";
+
+    var statusFilter = ViewBag.CurrentFilter as string
+                       ?? Context.Request.Query["status"].ToString();
+}
+
+<style>
+    /* ==================== PAGE HEADER ==================== */
+    .page-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #d1fae5;
+    }
+
+        .page-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.75rem;
+        }
+
+    .page-header-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-add-event {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: none;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        text-decoration: none;
+    }
+
+        .btn-add-event:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            color: white;
+        }
+
+    /* ==================== ALERTS ==================== */
+    .alert {
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+        .alert i {
+            font-size: 1.25rem;
+        }
+
+    .alert-success {
+        background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+        color: #059669;
+        border-left: 4px solid #10b981;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
+        color: #dc2626;
+        border-left: 4px solid #ef4444;
+    }
+
+    .alert-info {
+        background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+        color: #1e40af;
+        border-left: 4px solid #3b82f6;
+    }
+
+    /* ==================== FILTER CARD ==================== */
+    .filter-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #e5e7eb;
+    }
+
+    .filter-label {
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .filter-label i {
+            color: #10b981;
+        }
+
+    .form-select {
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 0.625rem 1rem;
+        transition: all 0.3s ease;
+        font-size: 0.9375rem;
+    }
+
+        .form-select:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            outline: none;
+        }
+
+    .btn-filter {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: none;
+        color: white;
+        padding: 0.625rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+        .btn-filter:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            color: white;
+        }
+
+    .btn-clear {
+        background: white;
+        border: 2px solid #e5e7eb;
+        color: #6b7280;
+        padding: 0.625rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+        .btn-clear:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: #374151;
+        }
+
+    /* ==================== TABLE ==================== */
+    .table-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+        .table thead {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        }
+
+            .table thead th {
+                font-weight: 700;
+                color: #1f2937;
+                text-transform: uppercase;
+                font-size: 0.75rem;
+                letter-spacing: 0.05em;
+                padding: 1rem;
+                border-bottom: 2px solid #d1fae5;
+            }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            color: #374151;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+            .table tbody tr:hover {
+                background: #f9fafb;
+            }
+
+            .table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+    .event-title {
+        font-weight: 600;
+        color: #1f2937;
+        font-size: 0.9375rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .event-description {
+        color: #6b7280;
+        font-size: 0.8125rem;
+        margin: 0;
+    }
+
+    .event-date {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+        .event-date span {
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .event-date i {
+            color: #10b981;
+            margin-right: 0.25rem;
+        }
+
+    /* ==================== BADGES ==================== */
+    .badge {
+        padding: 0.4rem 0.875rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+    }
+
+        .badge i {
+            font-size: 0.875rem;
+        }
+
+    .badge-success {
+        background: linear-gradient(135deg, #d1fae5, #ecfdf5);
+        color: #059669;
+        border: 1px solid #a7f3d0;
+    }
+
+    .badge-warning {
+        background: linear-gradient(135deg, #fef3c7, #fef9e6);
+        color: #d97706;
+        border: 1px solid #fde68a;
+    }
+
+    .badge-secondary {
+        background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+        color: #4b5563;
+        border: 1px solid #d1d5db;
+    }
+
+    .badge-dark {
+        background: linear-gradient(135deg, #374151, #1f2937);
+        color: white;
+        border: 1px solid #4b5563;
+    }
+
+    .badge-light {
+        background: linear-gradient(135deg, #f9fafb, #ffffff);
+        color: #6b7280;
+        border: 1px solid #e5e7eb;
+    }
+
+    /* ==================== ACTION BUTTONS ==================== */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+
+    .btn-action {
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.8125rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        border: 2px solid;
+        text-decoration: none;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+        .btn-action i {
+            font-size: 1rem;
+        }
+
+    .btn-edit {
+        background: white;
+        border-color: #3b82f6;
+        color: #3b82f6;
+    }
+
+        .btn-edit:hover {
+            background: #3b82f6;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+    .btn-view {
+        background: white;
+        border-color: #10b981;
+        color: #10b981;
+    }
+
+        .btn-view:hover {
+            background: #10b981;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+    .btn-hide {
+        background: white;
+        border-color: #6b7280;
+        color: #6b7280;
+    }
+
+        .btn-hide:hover {
+            background: #6b7280;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+        }
+
+    .btn-show {
+        background: white;
+        border-color: #10b981;
+        color: #10b981;
+    }
+
+        .btn-show:hover {
+            background: #10b981;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+    /* ==================== EMPTY STATE ==================== */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        border-radius: 12px;
+        border: 2px dashed #d1fae5;
+    }
+
+    .empty-state-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #d1fae5, #ecfdf5);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        color: #10b981;
+        font-size: 2.5rem;
+    }
+
+    .empty-state h4 {
+        color: #1f2937;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: #6b7280;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-state .btn {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: none;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        text-decoration: none;
+    }
+
+        .empty-state .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+    /* ==================== RESPONSIVE ==================== */
+    @@media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem;
+        }
+
+            .page-header h2 {
+                font-size: 1.25rem;
+            }
+
+        .page-header-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.25rem;
+        }
+
+        .btn-add-event {
+            padding: 0.625rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .filter-card {
+            padding: 1rem;
+        }
+
+        .action-buttons {
+            flex-wrap: wrap;
+        }
+
+        .table {
+            font-size: 0.875rem;
+        }
+
+            .table thead th,
+            .table tbody td {
+                padding: 0.75rem 0.5rem;
+            }
+    }
+
+    @@media (min-width: 769px) and (max-width: 1200px) {
+        .btn-action {
+            padding: 0.5rem 0.625rem;
+        }
+
+            .btn-action span {
+                display: none;
+            }
+    }
+
+    /* ==================== ANIMATIONS ==================== */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .table tbody tr {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+        .table tbody tr:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .table tbody tr:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .table tbody tr:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+
+        .table tbody tr:nth-child(4) {
+            animation-delay: 0.2s;
+        }
+
+        .table tbody tr:nth-child(5) {
+            animation-delay: 0.25s;
+        }
+</style>
+
+<!-- THÔNG BÁO -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        <div>
+            <strong>Thành công!</strong>
+            <div>@TempData["Success"]</div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <div>
+            <strong>Lỗi!</strong>
+            <div>@TempData["Error"]</div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <h2>
+            <span class="page-header-icon">
+                <i class="bi bi-calendar-event"></i>
+            </span>
+            Quản lý Sự kiện
+        </h2>
+        <a asp-action="Create" class="btn-add-event">
+            <i class="bi bi-plus-circle"></i>
+            <span>Thêm sự kiện mới</span>
+        </a>
+    </div>
+</div>
+
+<!-- BỘ LỌC TRẠNG THÁI -->
+<div class="filter-card">
+    <form asp-action="Index" method="get">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label class="filter-label mb-2">
+                    <i class="bi bi-funnel"></i>
+                    Lọc theo trạng thái
+                </label>
+                @Html.DropDownList(
+                "status",
+                                new SelectList(new[]
+                                {
+                                new { Value = "", Text = "📋 Tất cả trạng thái" },
+                                // new { Value = "draft", Text = "📝 Bản nháp" },
+                                new { Value = "pending", Text = "⏳ Chờ duyệt" },
+                                new { Value = "approved", Text = "✅ Đã duyệt" },
+                                // new { Value = "completed", Text = "✔️ Hoàn thành" },
+                                new { Value = "hidden", Text = "👁️ Đã ẩn" }
+                                }, "Value", "Text", statusFilter),
+                                new { @class = "form-select", onchange = "this.form.submit()" }
+                                )
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-filter w-100">
+                    <i class="bi bi-search"></i> Áp dụng
+                </button>
+            </div>
+            <div class="col-md-2">
+                <a asp-action="Index" class="btn btn-clear w-100">
+                    <i class="bi bi-x-circle"></i> Xóa lọc
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- DANH SÁCH SỰ KIỆN -->
+@if (Model != null && Model.Any())
+{
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">Tên sự kiện</th>
+                        <th style="width: 20%;">Thời gian</th>
+                        <th style="width: 15%;">Địa điểm</th>
+                        <th style="width: 10%;">Danh mục</th>
+                        <th style="width: 10%;">Trạng thái</th>
+                        <th style="width: 15%;" class="text-end">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="event-title">@e.Title</div>
+                                <div class="event-description">
+                                    @(string.IsNullOrEmpty(e.Description)
+                                                                ? "Không có mô tả"
+                                                                : e.Description.Length > 60
+                                                                ? e.Description.Substring(0, 60) + "..."
+                                                                : e.Description)
+                        </div>
+                    </td>
+                    <td>
+                        <div class="event-date">
+                            <span>
+                                <i class="bi bi-calendar-check"></i>
+                                @e.StartTime.ToString("dd/MM/yyyy")
+                            </span>
+                            <span>
+                                <i class="bi bi-calendar-x"></i>
+                                @e.EndTime.ToString("dd/MM/yyyy")
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <i class="bi bi-geo-alt text-success me-1"></i>
+                        @(e.Location?.Length > 20 ? e.Location.Substring(0, 20) + "..." : e.Location)
+                    </td>
+                    <td>
+                        <span class="badge badge-light">
+                            <i class="bi bi-tag"></i>
+                            @e.CategoryName
+                        </span>
+                    </td>
+                    <td>
+                        @switch (e.Status?.ToLower())
+                                {
+                                    case "approved":
+                                        <span class="badge badge-success">
+                                            <i class="bi bi-check-circle"></i>
+                                            Đã duyệt
+                                        </span>
+                                        break;
+                                    case "pending":
+                                        <span class="badge badge-warning">
+                                            <i class="bi bi-clock"></i>
+                                            Chờ duyệt
+                                        </span>
+                                        break;
+                                    case "completed":
+                                        <span class="badge badge-secondary">
+                                            <i class="bi bi-check-all"></i>
+                                            Hoàn thành
+                                        </span>
+                                        break;
+                                    case "hidden":
+                                        <span class="badge badge-dark">
+                                            <i class="bi bi-eye-slash"></i>
+                                            Đã ẩn
+                                        </span>
+                                        break;
+                                    default:
+                                        <span class="badge badge-light">
+                                            <i class="bi bi-file-earmark"></i>
+                                            Bản nháp
+                                        </span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a asp-action="Edit" asp-route-id="@e.Id"
+                                       class="btn-action btn-edit" title="Chỉnh sửa">
+                                        <i class="bi bi-pencil-square"></i>
+                                        <span class="d-none d-xl-inline">Sửa</span>
+                                    </a>
+
+                                    <a asp-action="Details" asp-route-id="@e.Id"
+                                       class="btn-action btn-view" title="Xem chi tiết">
+                                        <i class="bi bi-eye"></i>
+                                        <span class="d-none d-xl-inline">Xem</span>
+                                    </a>
+
+                                    @if (e.Status?.ToLower() == "hidden")
+                                    {
+                                        <form asp-action="Unhide"
+                                              asp-route-id="@e.Id"
+                                              asp-route-status="@statusFilter"
+                                              method="post"
+                                              data-title="@e.Title"
+                                              data-confirm="Bạn có muốn hiện lại sự kiện"
+                                              class="d-inline-flex">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn-action btn-show" title="Hiện lại">
+                                                <i class="bi bi-eye"></i>
+                                                <span class="d-none d-xl-inline">Hiện</span>
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="Hide"
+                                              asp-route-id="@e.Id"
+                                              asp-route-status="@statusFilter"
+                                              method="post"
+                                              data-title="@e.Title"
+                                              data-confirm="Bạn có chắc muốn ẩn sự kiện"
+                                              class="d-inline-flex">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn-action btn-hide" title="Ẩn sự kiện">
+                                                <i class="bi bi-eye-slash"></i>
+                                                <span class="d-none d-xl-inline">Ẩn</span>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <div class="empty-state-icon">
+            <i class="bi bi-calendar-x"></i>
+        </div>
+        <h4>Chưa có sự kiện nào</h4>
+        <p>Bạn chưa tạo sự kiện nào. Hãy bắt đầu bằng cách tạo sự kiện đầu tiên của bạn!</p>
+        <a asp-action="Create" class="btn">
+            <i class="bi bi-plus-circle"></i>
+            Tạo sự kiện mới
+        </a>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Confirm before hide/unhide
+            document.querySelectorAll('form[data-confirm]').forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    const title = form.dataset.title || 'sự kiện này';
+                    const msg = form.dataset.confirm;
+                    if (!confirm(`${msg} "${title}"?`)) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Auto dismiss alerts after 5 seconds
+            setTimeout(() => {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+
+            // Add animation to table rows
+            const rows = document.querySelectorAll('.table tbody tr');
+            rows.forEach((row, index) => {
+                row.style.animationDelay = `${index * 0.05}s`;
+            });
+        });
+    </script>
+}

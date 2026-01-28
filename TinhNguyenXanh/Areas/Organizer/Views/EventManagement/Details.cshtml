@@ -1,0 +1,583 @@
+﻿@model TinhNguyenXanh.DTOs.EventDTO
+@{
+    ViewData["Title"] = "Chi tiết sự kiện";
+    Layout = "~/Areas/Organizer/Views/Shared/_OrganizationLayout.cshtml";
+}
+
+<style>
+    /* ==================== PAGE HEADER ==================== */
+    .page-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #d1fae5;
+    }
+
+        .page-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.75rem;
+        }
+
+    .page-header-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-back {
+        background: white;
+        border: 2px solid #e5e7eb;
+        color: #6b7280;
+        padding: 0.625rem 1.25rem;
+        border-radius: 10px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+        .btn-back:hover {
+            background: #f9fafb;
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+    /* ==================== CONTENT CARD ==================== */
+    .content-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        padding: 2rem;
+        border-bottom: 2px solid #d1fae5;
+    }
+
+    .event-title {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700;
+        color: #1f2937;
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .event-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        color: #6b7280;
+        font-size: 0.9375rem;
+    }
+
+    .event-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .event-meta-item i {
+            color: #10b981;
+            font-size: 1.125rem;
+        }
+
+    .card-body-custom {
+        padding: 2rem;
+    }
+
+    /* ==================== INFO GRID ==================== */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-item {
+        background: linear-gradient(135deg, #f9fafb 0%, #f0fdf4 100%);
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+
+        .info-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+    .info-label {
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9375rem;
+    }
+
+        .info-label i {
+            color: #10b981;
+            font-size: 1.25rem;
+        }
+
+    .info-value {
+        color: #374151;
+        font-size: 0.9375rem;
+        line-height: 1.6;
+    }
+
+        .info-value .date-range {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+    /* ==================== BADGES ==================== */
+    .badge-custom {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .badge-success {
+        background: linear-gradient(135deg, #d1fae5, #ecfdf5);
+        color: #059669;
+        border: 1px solid #a7f3d0;
+    }
+
+    .badge-warning {
+        background: linear-gradient(135deg, #fef3c7, #fef9e6);
+        color: #d97706;
+        border: 1px solid #fde68a;
+    }
+
+    .badge-secondary {
+        background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+        color: #4b5563;
+        border: 1px solid #d1d5db;
+    }
+
+    .badge-light {
+        background: linear-gradient(135deg, #f9fafb, #ffffff);
+        color: #6b7280;
+        border: 1px solid #e5e7eb;
+    }
+
+    /* ==================== DESCRIPTION ==================== */
+    .description-section {
+        background: #f9fafb;
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .section-title {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700;
+        color: #1f2937;
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .section-title i {
+            color: #10b981;
+        }
+
+    .description-text {
+        color: #374151;
+        line-height: 1.8;
+        white-space: pre-line;
+    }
+
+    /* ==================== SIDEBAR ==================== */
+    .sidebar-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+        position: sticky;
+        top: 1rem;
+    }
+
+    .image-container {
+        position: relative;
+        width: 100%;
+        padding-top: 75%;
+        background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        overflow: hidden;
+    }
+
+    .event-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .no-image-placeholder {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: #10b981;
+    }
+
+        .no-image-placeholder i {
+            font-size: 4rem;
+            opacity: 0.5;
+            margin-bottom: 0.5rem;
+        }
+
+        .no-image-placeholder p {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+    .sidebar-actions {
+        padding: 1.5rem;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: none;
+        color: white;
+        padding: 0.875rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 700;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        text-decoration: none;
+    }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            color: white;
+        }
+
+    /* ==================== STATS ==================== */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        border-radius: 12px;
+        margin-top: 1.5rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background: white;
+        border-radius: 10px;
+        border: 1px solid #d1fae5;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #10b981;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #6b7280;
+        font-size: 0.8125rem;
+        font-weight: 600;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @@media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem;
+        }
+
+            .page-header h2 {
+                font-size: 1.25rem;
+            }
+
+        .page-header-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.25rem;
+        }
+
+        .card-header-custom,
+        .card-body-custom {
+            padding: 1.5rem;
+        }
+
+        .event-title {
+            font-size: 1.25rem;
+        }
+
+        .event-meta {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .sidebar-card {
+            position: static;
+            margin-top: 1.5rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ==================== ANIMATIONS ==================== */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .content-card,
+    .sidebar-card {
+        animation: fadeIn 0.4s ease-out;
+    }
+</style>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <h2>
+            <span class="page-header-icon">
+                <i class="bi bi-eye"></i>
+            </span>
+            Chi tiết sự kiện
+        </h2>
+        <a asp-action="Index" class="btn-back">
+            <i class="bi bi-arrow-left"></i>
+            <span>Quay lại</span>
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- MAIN CONTENT -->
+    <div class="col-lg-8">
+        <div class="content-card">
+            <!-- HEADER -->
+            <div class="card-header-custom">
+                <h1 class="event-title">@Model.Title</h1>
+                <div class="event-meta">
+                    <div class="event-meta-item">
+                        <i class="bi bi-building"></i>
+                        <span>@Model.OrganizationName</span>
+                    </div>
+                    <div class="event-meta-item">
+                        <i class="bi bi-tag"></i>
+                        <span>@Model.CategoryName</span>
+                    </div>
+                    <div class="event-meta-item">
+                        @switch (Model.Status?.ToLower())
+                        {
+                            case "approved":
+                                <span class="badge-custom badge-success">
+                                    <i class="bi bi-check-circle"></i>
+                                    Đã duyệt
+                                </span>
+                                break;
+                            case "pending":
+                                <span class="badge-custom badge-warning">
+                                    <i class="bi bi-clock"></i>
+                                    Chờ duyệt
+                                </span>
+                                break;
+                            case "completed":
+                                <span class="badge-custom badge-secondary">
+                                    <i class="bi bi-check-all"></i>
+                                    Hoàn thành
+                                </span>
+                                break;
+                            default:
+                                <span class="badge-custom badge-light">
+                                    <i class="bi bi-file-earmark"></i>
+                                    Bản nháp
+                                </span>
+                                break;
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- BODY -->
+            <div class="card-body-custom">
+                <!-- INFO GRID -->
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-calendar-event"></i>
+                            Thời gian
+                        </div>
+                        <div class="info-value">
+                            <div class="date-range">
+                                <div>
+                                    <i class="bi bi-calendar-check text-success"></i>
+                                    @Model.StartTime.ToString("dd/MM/yyyy HH:mm")
+                                </div>
+                            </div>
+                            <div class="date-range mt-2">
+                                <div>
+                                    <i class="bi bi-calendar-x text-danger"></i>
+                                    @Model.EndTime.ToString("dd/MM/yyyy HH:mm")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-geo-alt"></i>
+                            Địa điểm
+                        </div>
+                        <div class="info-value">
+                            @Model.Location
+                            @if (!string.IsNullOrEmpty(Model.LocationCoords))
+                            {
+                                <div class="mt-2 text-muted small">
+                                    <i class="bi bi-pin-map"></i>
+                                    @Model.LocationCoords
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-people"></i>
+                            Tình nguyện viên
+                        </div>
+                        <div class="info-value">
+                            <strong class="text-success">@Model.RegisteredCount</strong> /
+                            <strong>@Model.MaxVolunteers</strong> người
+                            <div class="progress mt-2" style="height: 8px;">
+                                <div class="progress-bar bg-success"
+                                     role="progressbar"
+                                     style="width: @((Model.RegisteredCount * 100.0 / Model.MaxVolunteers))%"
+                                     aria-valuenow="@Model.RegisteredCount"
+                                     aria-valuemin="0"
+                                     aria-valuemax="@Model.MaxVolunteers"></div>
+                            </div>
+                            <a asp-controller="Volunteers" asp-action="ListVolunteer" asp-route-id="@Model.Id" class="btn btn-success mt-3">
+                                <i class="bi bi-people"></i> Chi tiết
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-calendar-plus"></i>
+                            Ngày tạo
+                        </div>
+                        <div class="info-value">
+                            @Model.StartTime.ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DESCRIPTION -->
+                <div class="description-section">
+                    <h3 class="section-title">
+                        <i class="bi bi-file-text"></i>
+                        Mô tả chi tiết
+                    </h3>
+                    <p class="description-text">@Model.Description</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="col-lg-4">
+        <div class="sidebar-card">
+            <!-- IMAGE -->
+            <div class="image-container">
+                @if (!string.IsNullOrEmpty(Model.Images))
+                {
+                    <img src="@Model.Images" alt="@Model.Title" class="event-image" />
+                }
+                else
+                {
+                    <div class="no-image-placeholder">
+                        <i class="bi bi-image"></i>
+                        <p>Chưa có hình ảnh</p>
+                    </div>
+                }
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="sidebar-actions">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-edit">
+                    <i class="bi bi-pencil-square"></i>
+                    Chỉnh sửa sự kiện
+                </a>
+
+                <!-- STATS -->
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">@Model.RegisteredCount</div>
+                        <div class="stat-label">Đã đăng ký</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">@(Model.MaxVolunteers - Model.RegisteredCount)</div>
+                        <div class="stat-label">Còn trống</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

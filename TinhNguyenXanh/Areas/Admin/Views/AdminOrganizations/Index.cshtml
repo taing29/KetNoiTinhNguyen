@@ -1,0 +1,495 @@
+﻿@using Humanizer
+@model IEnumerable<TinhNguyenXanh.DTOs.OrganizationDTO>
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #10b981; /* emerald-500 */
+        --primary-dark: #059669; /* emerald-600 */
+        --primary-light: #34d399; /* emerald-400 */
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --dark: #0f172a;
+        --gray: #64748b;
+        --border: #e2e8f0;
+        --shadow-sm: 0 2px 8px rgba(16, 185, 129, 0.08);
+        --shadow-md: 0 8px 24px rgba(16, 185, 129, 0.12);
+        --shadow-lg: 0 16px 48px rgba(16, 185, 129, 0.15);
+    }
+
+    body {
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        min-height: 100vh;
+    }
+
+    /* Header */
+    .page-header {
+        font-weight: 800;
+        color: var(--dark);
+        font-size: 2rem;
+        letter-spacing: -0.5px;
+        position: relative;
+        display: inline-block;
+    }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 2px;
+        }
+
+    /* Animation */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .fade-in {
+        animation: fadeInUp 0.6s ease forwards;
+        opacity: 0;
+    }
+
+        .fade-in.delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .fade-in.delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        .fade-in.delay-3 {
+            animation-delay: 0.3s;
+        }
+
+        .fade-in.delay-4 {
+            animation-delay: 0.4s;
+        }
+
+    /* Search Card - giống hệt trang trước */
+    .search-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        max-width: 520px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+        .search-card:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 12px 32px rgba(16, 185, 129, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-card .form-control {
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            background: transparent;
+        }
+
+        .search-card .btn {
+            padding: 1rem 2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+
+            .search-card .btn:hover {
+                background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+                transform: scale(1.05);
+            }
+
+    /* Table Card */
+    .card-table {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid rgba(16, 185, 129, 0.1);
+    }
+
+        .card-table thead {
+            background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+        }
+
+            .card-table thead::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 3px;
+                background: linear-gradient(90deg, var(--primary-light), var(--primary), var(--primary-light));
+            }
+
+        .card-table th {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            padding: 1.3rem 1.2rem !important;
+            color: #000;
+            border: none;
+        }
+
+        .card-table tbody tr {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+            .card-table tbody tr:hover {
+                background: linear-gradient(90deg, #f0fdf4 0%, #ecfdf5 100%) !important;
+                transform: scale(1.01);
+                box-shadow: 0 8px 24px rgba(16, 185, 129, 0.12);
+            }
+
+    .org-img {
+        width: 68px;
+        height: 68px;
+        object-fit: cover;
+        border-radius: 18px;
+        box-shadow: 0 4px 16px rgba(16,185,129,0.3);
+    }
+
+    .org-name {
+        font-weight: 600;
+        color: var(--dark);
+        font-size: 1.05rem;
+    }
+
+    .org-desc {
+        font-size: 0.9rem;
+        color: var(--gray);
+        margin-top: 4px;
+    }
+
+    .badge-type {
+        font-size: 0.75rem;
+        padding: 0.5em 1em;
+        border-radius: 50px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #8b5cf6, #7c3ddc);
+        color: white;
+        box-shadow: 0 2px 8px rgba(139,92,246,0.3);
+    }
+
+    .status-badge {
+        font-weight: 700;
+        padding: 0.45em 1em !important; /* Giảm padding xuống */
+        border-radius: 50px;
+        font-size: 0.78rem !important; /* Chữ nhỏ hơn một chút */
+        box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        letter-spacing: 0.3px;
+        white-space: nowrap; /* Quan trọng: không cho xuống dòng */
+        display: inline-block;
+        min-width: 92px; /* Đảm bảo cùng chiều rộng */
+        text-align: center;
+    }
+
+        .status-badge.verified {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .status-badge.unverified {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #000;
+        }
+
+        .status-badge.approved {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .status-badge.pending {
+            background: linear-gradient(135deg, #f87171, #ef4444);
+            color: white;
+        }
+
+    .btn-action {
+        width: 56px;
+        height: 56px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        border: 2px solid transparent;
+    }
+
+        .btn-action::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%,-50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .btn-action:hover::before {
+            width: 120%;
+            height: 120%;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-6px) scale(1.12);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+        }
+
+        .btn-action.approve {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .btn-action.reject {
+            background: linear-gradient(135deg, #f87171, #ef4444);
+        }
+
+    /* Pagination giống hệt */
+    .pagination-wrapper {
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        padding: 2rem;
+        border-top: 2px solid #e2e8f0;
+    }
+
+    .pagination .page-link {
+        color: var(--primary);
+        background: white;
+        border: 2px solid #d1fae5;
+        border-radius: 14px !important;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s;
+    }
+
+    .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        color: white;
+        border-color: var(--primary);
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+        transform: scale(1.1);
+    }
+
+    .pagination .page-link:hover:not(.active) {
+        background: #ecfdf5;
+        border-color: var(--primary);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+    }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            font-size: 1.6rem;
+        }
+
+        .btn-action {
+            width: 48px;
+            height: 48px;
+            font-size: 1.2rem;
+        }
+    }
+</style>
+
+<div class="container-fluid px-4 mt-4">
+
+    <!-- Header + Search -->
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-5 gap-4 fade-in">
+        <div>
+            <h3 class="page-header m-0">Duyệt Ban Tổ Chức</h3>
+            <p class="text-muted mt-2 mb-0">Xem xét và phê duyệt các tổ chức tình nguyện mới đăng ký</p>
+        </div>
+
+        <form asp-action="Index" method="get" class="search-card m-0 fade-in delay-1">
+            <div class="input-group">
+                <input type="text" name="search" value="@ViewBag.Search"
+                       class="form-control" placeholder="Tìm tên tổ chức, email, thành phố..." autocomplete="off" />
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Success Alert -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success rounded-pill shadow text-center py-3 mb-4 mx-auto fade-in delay-2" style="max-width: 600px;">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong>Thành công!</strong> @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <!-- Table Card -->
+    <div class="card card-table border-0 fade-in delay-2">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="position-relative">
+                        <tr>
+                            <th>Logo</th>
+                            <th>Tên tổ chức</th>
+                            <th>Loại tổ chức</th>
+                            <th>Email</th>
+                            <th>Thành phố</th>
+                            <th class="text-center">Xác minh</th>
+                            <th class="text-center">Trạng thái</th>
+                            <th class="text-center">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center py-6">
+                                    <div class="empty-state">
+                                        <i class="fas fa-users fa-5x text-success mb-4"></i>
+                                        <h4 class="text-success">Tuyệt vời!</h4>
+                                        <p class="text-muted">Không còn tổ chức nào chờ duyệt</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var (org, i) in Model.Select((o, idx) => (o, idx)))
+                            {
+                                <tr class="fade-in delay-@((i % 4) + 1)">
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(org.AvatarUrl))
+                                        {
+                                            <img src="@org.AvatarUrl" class="org-img" alt="Logo" />
+                                        }
+                                        else
+                                        {
+                                            <div class="org-img bg-light d-flex align-items-center justify-content-center rounded">
+                                                <i class="fas fa-users text-muted fa-2x"></i>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 220px;">
+                                            <span class="org-name">@org.Name</span>
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(org.Description))
+                                        {
+                                            <div class="org-desc text-truncate" style="max-width: 220px;">
+                                                @org.Description.Truncate(70)
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="badge-type">@org.OrganizationType</span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">@org.ContactEmail</small>
+                                    </td>
+                                    <td>@org.City</td>
+                                    <td class="text-center">
+                                        <span class="status-badge @(org.Verified ? "verified" : "unverified")">
+                                            @(org.Verified ? "Đã xác minh" : "Chưa xác minh")
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="status-badge @(org.IsApproved ? "approved" : "pending")">
+                                            @(org.IsApproved ? "Đã duyệt" : "Chờ duyệt")
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-3">
+                                            <form asp-action="ToggleApproval" asp-route-id="@org.Id" method="post" class="d-inline">
+                                                <button type="submit" name="actionType" value="approve"
+                                                        class="btn-action approve" title="Duyệt tổ chức này">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+
+                                            @* <form asp-action="ToggleApproval" asp-route-id="@org.Id" method="post" class="d-inline">
+                                                <button type="submit" name="actionType" value="reject"
+                                                        class="btn-action reject" title="Từ chối tổ chức">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </form> *@
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            @if (ViewBag.TotalPages is > 1)
+            {
+                <div class="pagination-wrapper fade-in delay-4">
+                    <nav>
+                        <ul class="pagination justify-content-center mb-0">
+                            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { search = ViewBag.Search, page = i })">@i</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Fade-in khi scroll
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.style.opacity = 1;
+                    e.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Tự động ẩn alert thành công
+        setTimeout(() => {
+            const a = document.querySelector('.alert');
+            if (a) {
+                a.style.transition = 'all 0.5s';
+                a.style.opacity = '0';
+                a.style.transform = 'scale(0.9)';
+                setTimeout(() => a.remove(), 500);
+            }
+        }, 5000);
+    </script>
+}

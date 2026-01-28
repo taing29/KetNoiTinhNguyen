@@ -1,0 +1,47 @@
+﻿@model IEnumerable<TinhNguyenXanh.Models.EventComment>
+@using System.Security.Claims
+
+<div class="comments-list-wrapper">
+    @if (!Model.Any())
+    {
+        <div class="text-center text-muted p-4 border-top">
+            <i class="bi bi-chat-dots fs-4 d-block mb-2"></i>
+            <p class="mb-0">Chưa có bình luận nào. Hãy là người đầu tiên tham gia thảo luận!</p>
+        </div>
+    }
+    else
+    {
+        @* Hiển thị comment thực tế *@
+        @foreach (var c in Model.OrderByDescending(x => x.CreatedAt))
+        {
+            @Html.Partial("_SingleComment", c)
+        }
+
+        @* Dữ liệu mẫu để test (nếu cần) *@
+       
+            var sampleComments = new List<TinhNguyenXanh.Models.EventComment>
+            {
+                new TinhNguyenXanh.Models.EventComment {
+                    Id = 1001,
+                    Content = "Tuyệt vời! Mình rất háo hức tham gia hoạt động trồng cây lần này. Hy vọng sẽ đóng góp chút sức lực nhỏ bé cho môi trường xanh. Mọi người cùng đi nhé!",
+                    CreatedAt = DateTime.Now.AddDays(-1).AddHours(-3)
+                },
+                new TinhNguyenXanh.Models.EventComment {
+                    Id = 1002,
+                    Content = "Thông tin rất chi tiết. Mình muốn hỏi là khu vực tập trung chính xác là ở đâu ạ? Rất mong được tham gia cùng mọi người. Cảm ơn tổ chức!",
+                    CreatedAt = DateTime.Now.AddDays(-1).AddHours(-8)
+                },
+                new TinhNguyenXanh.Models.EventComment {
+                    Id = 1003,
+                    Content = "Đây là một sự kiện ý nghĩa, mình đã đăng ký và chờ đợi phản hồi. Chúc cho sự kiện thành công tốt đẹp! 🎉",
+                    CreatedAt = DateTime.Now.AddDays(-2).AddHours(-1)
+                }
+            };
+      
+
+        @foreach (var c in sampleComments)
+        {
+            @Html.Partial("_SingleComment", c)
+        }
+    }  @* Kết thúc else *@
+</div>

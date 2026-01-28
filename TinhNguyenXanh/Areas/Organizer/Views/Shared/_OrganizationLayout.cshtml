@@ -1,0 +1,645 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Ban tổ chức</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/css/site.css" />
+
+    <style>
+        :root {
+            --primary-color: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary-color: #3b82f6;
+            --sidebar-width: 280px;
+            --sidebar-bg: #1e293b;
+            --sidebar-hover: #334155;
+            --sidebar-active: #10b981;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f8fafc;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        #wrapper {
+            min-height: 100vh;
+        }
+
+        /* ==================== SIDEBAR ==================== */
+        #sidebar-wrapper {
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+            overflow-y: auto;
+        }
+
+            /* Custom Scrollbar */
+            #sidebar-wrapper::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            #sidebar-wrapper::-webkit-scrollbar-track {
+                background: rgba(255,255,255,0.05);
+            }
+
+            #sidebar-wrapper::-webkit-scrollbar-thumb {
+                background: rgba(255,255,255,0.2);
+                border-radius: 3px;
+            }
+
+                #sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+                    background: rgba(255,255,255,0.3);
+                }
+
+        .sidebar-heading {
+            padding: 1.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+            .sidebar-heading h4 {
+                margin: 0;
+                font-weight: 700;
+                font-size: 1.25rem;
+                color: white;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                font-family: 'Poppins', sans-serif;
+            }
+
+        .org-badge {
+            width: 45px;
+            height: 45px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar-nav {
+            padding: 1.5rem 0;
+        }
+
+        .nav-section-title {
+            color: #94a3b8;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0.5rem 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .sidebar-nav .nav-item {
+            margin: 0.25rem 1rem;
+        }
+
+        .sidebar-nav .nav-link {
+            color: #cbd5e1;
+            padding: 0.875rem 1rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.9375rem;
+            text-decoration: none;
+            position: relative;
+        }
+
+            .sidebar-nav .nav-link i {
+                font-size: 1.125rem;
+                width: 22px;
+                text-align: center;
+            }
+
+            .sidebar-nav .nav-link:hover {
+                background: var(--sidebar-hover);
+                color: white;
+                transform: translateX(3px);
+            }
+
+            .sidebar-nav .nav-link.active {
+                background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+                color: white;
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            }
+
+                .sidebar-nav .nav-link.active i {
+                    animation: pulse 2s infinite;
+                }
+
+        @@keyframes pulse {
+            0%, 100%
+
+        {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+
+        }
+
+        .sidebar-nav .nav-link.logout {
+            color: #f87171;
+        }
+
+            .sidebar-nav .nav-link.logout:hover {
+                background: rgba(248, 113, 113, 0.15);
+                color: #ef4444;
+            }
+
+        .sidebar-footer {
+            position: sticky;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        /* ==================== PAGE CONTENT ==================== */
+        #page-content-wrapper {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        /* Top Navigation */
+        .top-navbar {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.25rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-title-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-light), #ecfdf5);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.25rem;
+        }
+
+        .breadcrumb {
+            background: none;
+            padding: 0;
+            margin: 0.5rem 0 0 0;
+            font-size: 0.875rem;
+        }
+
+        .breadcrumb-item {
+            color: var(--text-light);
+        }
+
+            .breadcrumb-item.active {
+                color: var(--primary-color);
+                font-weight: 600;
+            }
+
+            .breadcrumb-item + .breadcrumb-item::before {
+                color: var(--text-light);
+            }
+
+        /* User Profile */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.625rem 1.125rem;
+            border-radius: 12px;
+            background: var(--bg-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+            .user-profile:hover {
+                background: white;
+                border-color: var(--primary-color);
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+            }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.875rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.9375rem;
+            line-height: 1.2;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Action Buttons */
+        .btn-home {
+            background: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.625rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+            .btn-home:hover {
+                background: var(--primary-color);
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+            }
+
+        /* Main Content Area */
+        .main-content {
+            padding: 2rem;
+            min-height: calc(100vh - 85px);
+        }
+
+        /* Mobile Toggle */
+        .mobile-toggle {
+            display: none;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 0.625rem 1.125rem;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease;
+        }
+
+            .mobile-toggle:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+            }
+
+        /* Stats Cards (Optional Enhancement) */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            }
+
+        /* Utilities */
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .badge-custom {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @@media (max-width: 768px) {
+            #sidebar-wrapper
+
+        {
+            margin-left: calc(-1 * var(--sidebar-width));
+        }
+
+        #sidebar-wrapper.active {
+            margin-left: 0;
+        }
+
+        #page-content-wrapper {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .mobile-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .top-navbar {
+            padding: 1rem;
+        }
+
+        .main-content {
+            padding: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+        }
+
+        .user-info {
+            display: none;
+        }
+
+        }
+
+        /* Overlay for mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 999;
+            backdrop-filter: blur(2px);
+        }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+        /* Animations */
+        @@keyframes fadeInUp {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar Overlay (Mobile) -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <h4>
+                    <span class="org-badge">
+                        <i class="bi bi-building"></i>
+                    </span>
+                    <span>Ban Tổ Chức</span>
+                </h4>
+            </div>
+
+            <nav class="sidebar-nav">
+                @* <div class="nav-section-title">Tổng quan</div> *@
+                @* <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a asp-area="Organizer" asp-controller="Dashboard" asp-action="Index"
+                           class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                </ul> *@
+
+                <div class="nav-section-title">Quản lý</div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a asp-area="Organizer" asp-controller="EventManagement" asp-action="Index"
+                           class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "EventManagement" ? "active" : "")">
+                            <i class="bi bi-calendar-event"></i>
+                            <span>Sự kiện</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-area="Organizer"
+                           asp-controller="Volunteers"
+                           asp-action="Index"
+                           class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Volunteers" ? "active" : "")">
+                            <i class="bi bi-person-check"></i>
+                            <span>Duyệt đăng ký</span>
+                        </a>
+                    </li>
+                    @* <li class="nav-item">
+                        <a asp-area="Organizer" asp-controller="Reports" asp-action="Index"
+                           class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")">
+                            <i class="bi bi-bar-chart-line"></i>
+                            <span>Báo cáo & Thống kê</span>
+                        </a>
+                    </li> *@
+                </ul>
+
+                <div class="nav-section-title">Cài đặt</div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a asp-area="Organizer" asp-controller="Organization" asp-action="Profile"
+                           class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Organization" ? "active" : "")">
+                            <i class="bi bi-building"></i>
+                            <span>Hồ sơ tổ chức</span>
+                        </a>
+                    </li>
+                    @* <li class="nav-item">
+                        <a asp-area="Organizer" asp-controller="Settings" asp-action="Index"
+                           class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Settings" ? "active" : "")">
+                            <i class="bi bi-gear"></i>
+                            <span>Cài đặt chung</span>
+                        </a>
+                    </li> *@
+                </ul>
+            </nav>
+
+            @* <div class="sidebar-footer">
+                <a asp-area="Organizer" asp-controller="Account" asp-action="Logout"
+                   class="nav-link logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Đăng xuất</span>
+                </a>
+            </div> *@
+        </div>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <!-- Top Navigation -->
+            <nav class="top-navbar">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-3">
+                        <button class="mobile-toggle" id="menu-toggle">
+                            <i class="bi bi-list"></i>
+                            <span>Menu</span>
+                        </button>
+                        <div>
+                            <h1 class="page-title">
+                                <span class="page-title-icon">
+                                    <i class="bi bi-grid-3x3-gap"></i>
+                                </span>
+                                @ViewData["Title"]
+                            </h1>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3">
+                        <a asp-area="" asp-controller="Home" asp-action="Index"
+                           class="btn-home d-none d-md-inline-flex">
+                            <i class="bi bi-house"></i>
+                            <span>Trang chủ</span>
+                        </a>
+
+                        <div class="user-profile">
+                            <div class="user-avatar">
+                                @(User.Identity?.Name?.Substring(0, 1).ToUpper() ?? "U")
+                            </div>
+                            <div class="user-info">
+                                <div class="user-name">@User.Identity?.Name</div>
+                                <div class="user-role">Ban tổ chức</div>
+                            </div>
+                            <i class="bi bi-chevron-down d-none d-md-block" style="color: var(--text-light);"></i>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <div class="main-content animate-fadeInUp">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        // Sidebar Toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar-wrapper');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        menuToggle?.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        overlay?.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Active link highlighting
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && currentPath.includes(href)) {
+                link.classList.add('active');
+            }
+        });
+
+        // Smooth scroll animation
+        window.addEventListener('load', () => {
+            document.querySelector('.main-content')?.classList.add('animate-fadeInUp');
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

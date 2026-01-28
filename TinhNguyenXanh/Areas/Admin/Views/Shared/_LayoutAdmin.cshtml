@@ -1,0 +1,527 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green-main: #10b981;
+            --green-light: #34d399;
+            --green-dark: #059669;
+            --green-darker: #047857;
+            --sidebar-bg: #0f172a;
+            --sidebar-dark: #020617;
+            --sidebar-light: #1e293b;
+            --text-muted: #94a3b8;
+            --text-light: #e2e8f0;
+            --menu-hover: rgba(16, 185, 129, 0.1);
+            --menu-active: linear-gradient(135deg, #10b981, #059669);
+            --border-color: rgba(148, 163, 184, 0.1);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+
+        /* TOP NAV - REDESIGNED */
+        .sb-topnav {
+            height: 72px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1050;
+            border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: #fff !important;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            letter-spacing: -0.5px;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+            .navbar-brand i {
+                font-size: 1.6rem;
+                color: var(--green-main);
+                filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5));
+            }
+
+            .navbar-brand:hover {
+                transform: translateX(5px);
+            }
+
+        .nav-link {
+            color: var(--text-light) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+            .nav-link:hover {
+                color: var(--green-light) !important;
+            }
+
+        /* USER DROPDOWN */
+        .navbar-nav .dropdown-menu {
+            background: var(--sidebar-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+            border-radius: 12px;
+            margin-top: 10px;
+            min-width: 200px;
+        }
+
+        .navbar-nav .dropdown-item {
+            color: var(--text-light);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 4px 8px;
+            transition: all 0.2s;
+        }
+
+            .navbar-nav .dropdown-item:hover {
+                background: var(--menu-hover);
+                color: var(--green-light);
+            }
+
+        /* SIDEBAR - PREMIUM REDESIGN */
+        #layoutSidenav_nav {
+            width: 280px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: fixed;
+            top: 72px;
+            left: 0;
+            height: calc(100vh - 72px);
+            z-index: 1000;
+        }
+
+            #layoutSidenav_nav.minimized {
+                width: 80px;
+            }
+
+        .sb-sidenav {
+            background: var(--sidebar-bg);
+            height: 100%;
+            padding: 24px 0;
+            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.25);
+            overflow: hidden auto;
+            border-right: 1px solid var(--border-color);
+        }
+
+            .sb-sidenav::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .sb-sidenav::-webkit-scrollbar-track {
+                background: var(--sidebar-dark);
+            }
+
+            .sb-sidenav::-webkit-scrollbar-thumb {
+                background: linear-gradient(180deg, var(--green-main), var(--green-dark));
+                border-radius: 10px;
+            }
+
+                .sb-sidenav::-webkit-scrollbar-thumb:hover {
+                    background: var(--green-light);
+                }
+
+        .sb-sidenav-menu-heading {
+            padding: 24px 24px 12px;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 16px;
+            position: relative;
+        }
+
+            .sb-sidenav-menu-heading::before {
+                content: '';
+                position: absolute;
+                left: 24px;
+                top: 0;
+                width: 30px;
+                height: 2px;
+                background: var(--green-main);
+                border-radius: 2px;
+            }
+
+            .sb-sidenav-menu-heading:first-child {
+                border-top: none;
+                margin-top: 0;
+                padding-top: 8px;
+            }
+
+        .sb-sidenav.minimized .sb-sidenav-menu-heading {
+            opacity: 0;
+            height: 0;
+            padding: 0;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .sb-sidenav .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 20px;
+            color: var(--text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            margin: 4px 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .sb-sidenav .nav-link::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 4px;
+                height: 100%;
+                background: var(--green-main);
+                transform: scaleY(0);
+                transition: transform 0.3s ease;
+                border-radius: 0 4px 4px 0;
+            }
+
+            .sb-sidenav .nav-link i {
+                width: 24px;
+                text-align: center;
+                font-size: 1.1rem;
+                transition: all 0.3s ease;
+            }
+
+            .sb-sidenav .nav-link:hover {
+                background: var(--menu-hover);
+                color: #fff;
+                transform: translateX(4px);
+                box-shadow: var(--shadow-md);
+            }
+
+                .sb-sidenav .nav-link:hover i {
+                    color: var(--green-light);
+                    transform: scale(1.15);
+                }
+
+            .sb-sidenav .nav-link.active {
+                background: var(--menu-active) !important;
+                color: #fff !important;
+                box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+                transform: translateX(4px);
+            }
+
+                .sb-sidenav .nav-link.active::before {
+                    transform: scaleY(1);
+                }
+
+                .sb-sidenav .nav-link.active i {
+                    color: #fff;
+                    animation: pulse 2s ease-in-out infinite;
+                }
+
+        @@keyframes pulse {
+            0%, 100%
+
+        {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+
+        }
+
+        .sb-sidenav.minimized .nav-link {
+            justify-content: center;
+            padding: 16px;
+            margin: 6px 12px;
+        }
+
+            .sb-sidenav.minimized .nav-link span {
+                display: none;
+            }
+
+            .sb-sidenav.minimized .nav-link::after {
+                content: attr(data-title);
+                position: absolute;
+                left: 75px;
+                background: var(--sidebar-dark);
+                color: #fff;
+                padding: 10px 16px;
+                border-radius: 8px;
+                font-size: 0.85rem;
+                white-space: nowrap;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                box-shadow: var(--shadow-lg);
+                z-index: 1000;
+                border: 1px solid var(--border-color);
+            }
+
+            .sb-sidenav.minimized .nav-link:hover::after {
+                opacity: 1;
+                visibility: visible;
+                left: 70px;
+            }
+
+        /* CONTENT AREA */
+        #layoutSidenav_content {
+            margin-left: 280px;
+            margin-top: 72px;
+            padding: 36px;
+            min-height: calc(100vh - 72px);
+            transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        }
+
+            #layoutSidenav_content.minimized {
+                margin-left: 80px;
+            }
+
+        /* COLLAPSE BUTTON - ENHANCED */
+        .sidebar-collapse-btn {
+            position: absolute;
+            top: 20px;
+            right: 16px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+            color: var(--green-light);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1100;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow: var(--shadow-sm);
+        }
+
+            .sidebar-collapse-btn:hover {
+                background: linear-gradient(135deg, var(--green-main), var(--green-dark));
+                color: #fff;
+                transform: scale(1.1);
+                box-shadow: var(--shadow-md);
+            }
+
+            .sidebar-collapse-btn i {
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar-collapse-btn:hover i {
+                transform: scale(1.2);
+            }
+
+        /* PAGE TITLE
+        .page-title {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 2rem;
+            margin-bottom: 0;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 12px;
+        } */
+
+            /* .page-title::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 60px;
+                height: 4px;
+                background: linear-gradient(90deg, var(--green-main), var(--green-light));
+                border-radius: 2px;
+            } */
+
+        /* RESPONSIVE DESIGN */
+        @@media (max-width: 768px) {
+            #layoutSidenav_nav
+
+        {
+            width: 0;
+            overflow: hidden;
+        }
+
+        #layoutSidenav_nav.mobile-show {
+            width: 280px;
+        }
+
+        #layoutSidenav_content {
+            margin-left: 0;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+        }
+
+        }
+
+        /* CUSTOM SCROLLBAR FOR MAIN CONTENT */
+        main::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        main::-webkit-scrollbar-track {
+            background: rgba(16, 185, 129, 0.05);
+            border-radius: 10px;
+        }
+
+        main::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--green-main), var(--green-dark));
+            border-radius: 10px;
+        }
+
+            main::-webkit-scrollbar-thumb:hover {
+                background: var(--green-light);
+            }
+    </style>
+    @RenderSection("Styles", required: false)
+</head>
+<body class="sb-nav-fixed">
+
+    <!-- TOP NAV -->
+    <nav class="sb-topnav navbar navbar-expand navbar-dark px-4">
+        <a class="navbar-brand" href="#">
+            <i class="fa-solid fa-leaf"></i>
+            <span>Admin Dashboard</span>
+        </a>
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-user-circle fa-lg me-2"></i>@User.Identity?.Name
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <form asp-area="Identity" asp-page="/Account/Logout" method="post">
+                            <button class="dropdown-item text-danger">
+                                <i class="fa fa-sign-out-alt me-2"></i>Đăng xuất
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <div id="layoutSidenav">
+        <nav id="layoutSidenav_nav">
+            <div class="sb-sidenav" id="sidebar">
+                <div class="sidebar-collapse-btn" id="collapseSidebarBtn">
+                    <i class="fa-solid fa-chevron-left fa-sm"></i>
+                </div>
+                <div class="sb-sidenav-menu" style="margin-top: 48px;">
+                    <div class="sb-sidenav-menu-heading">Quản lý</div>
+                    <a class="nav-link" href="@Url.Action("Index", "Dashboard", new { area = "Admin" })" data-title="Thống kê">
+                        <i class="fas fa-chart-pie"></i><span>Thống kê</span>
+                    </a>
+                    <a class="nav-link" href="@Url.Action("Index", "Users", new { area = "Admin" })" data-title="Tài khoản">
+                        <i class="fas fa-users"></i><span>Tài khoản</span>
+                    </a>
+                    <a class="nav-link" href="@Url.Action("Index", "EventCategories", new { area = "Admin" })" data-title="Danh mục">
+                        <i class="fas fa-tags"></i><span>Danh mục</span>
+                    </a>
+                    <a class="nav-link" href="@Url.Action("Index", "Events", new { area = "Admin" })" data-title="Hoạt động">
+                        <i class="fas fa-calendar-alt"></i><span>Hoạt động</span>
+                    </a>
+
+                    <div class="sb-sidenav-menu-heading">Duyệt</div>
+                    <a class="nav-link" href="@Url.Action("Index", "AdminEventApprovals", new { area = "Admin" })" data-title="Duyệt hoạt động">
+                        <i class="fas fa-clipboard-check"></i><span>Duyệt hoạt động</span>
+                    </a>
+                    <a class="nav-link" href="@Url.Action("Index", "AdminOrganizations", new { area = "Admin" })" data-title="Duyệt tổ chức">
+                        <i class="fas fa-building"></i><span>Duyệt tổ chức</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div id="layoutSidenav_content">
+            <main>
+                <h1 class="page-title">@ViewData["Title"]</h1>
+                <div class="mt-4">
+                    @RenderBody()
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const sidebar = document.getElementById("sidebar");
+        const sidebarWrap = document.getElementById("layoutSidenav_nav");
+        const content = document.getElementById("layoutSidenav_content");
+        const collapseBtn = document.getElementById("collapseSidebarBtn");
+
+        if (localStorage.getItem("sidebar-minimized") === "true") {
+            sidebar.classList.add("minimized");
+            sidebarWrap.classList.add("minimized");
+            content.classList.add("minimized");
+            collapseBtn.innerHTML = '<i class="fa-solid fa-chevron-right fa-sm"></i>';
+        }
+
+        collapseBtn.addEventListener("click", () => {
+            const isMinimized = sidebar.classList.toggle("minimized");
+            sidebarWrap.classList.toggle("minimized");
+            content.classList.toggle("minimized");
+            localStorage.setItem("sidebar-minimized", isMinimized ? "true" : "false");
+            collapseBtn.innerHTML = isMinimized
+                ? '<i class="fa-solid fa-chevron-right fa-sm"></i>'
+                : '<i class="fa-solid fa-chevron-left fa-sm"></i>';
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const currentPath = window.location.pathname.toLowerCase();
+            const navLinks = document.querySelectorAll(".sb-sidenav .nav-link");
+
+            navLinks.forEach(link => {
+                const href = link.getAttribute("href");
+                if (!href) return;
+
+                const linkPath = href.toLowerCase().split('?')[0].replace(/\/$/, '');
+                const currentNormalized = currentPath.split('?')[0].replace(/\/$/, '');
+
+                if (linkPath && (currentNormalized === linkPath || currentNormalized + "/" === linkPath || linkPath + "/" === currentNormalized)) {
+                    link.classList.add("active");
+                } else {
+                    link.classList.remove("active");
+                }
+            });
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

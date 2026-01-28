@@ -1,0 +1,529 @@
+﻿@{
+    ViewData["Title"] = "Về Chúng Tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary-color: #16a34a;
+        --primary-hover: #15803d;
+        --accent-light: #f0fdf4;
+        --text-dark: #0f172a;
+        --text-muted: #64748b;
+        --border-color: #e5e7eb;
+        --bg-light: #ffffff;
+    }
+
+    .about-section {
+        background: #ffffff;
+        padding: 5rem 0;
+    }
+
+    /* Header Section */
+    .about-header {
+        text-align: center;
+        margin-bottom: 5rem;
+        animation: fadeInDown 0.6s ease-out;
+    }
+
+        .about-header h2 {
+            color: var(--text-dark);
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+            .about-header h2::after {
+                content: '';
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 4px;
+                background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+                border-radius: 2px;
+            }
+
+        .about-header p {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            max-width: 700px;
+            margin: 2rem auto 0;
+            line-height: 1.7;
+        }
+
+    /* Image Card */
+    .image-card {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        position: relative;
+        animation: fadeInLeft 0.8s ease-out;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--accent-light);
+        border: 1px solid var(--border-color);
+    }
+
+        .image-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(22, 163, 74, 0.05) 0%, rgba(21, 128, 61, 0.03) 100%);
+            z-index: 1;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            padding: 2rem;
+            transition: transform 0.5s ease;
+        }
+
+        .image-card:hover img {
+            transform: scale(1.05);
+        }
+
+    /* Content Card */
+    .content-card {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        animation: fadeInRight 0.8s ease-out;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .content-card h4 {
+            color: var(--text-dark);
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-card h5 {
+            color: var(--text-dark);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            padding-left: 1rem;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .content-card p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .content-card strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+    /* Contact Card */
+    .contact-card {
+        background: linear-gradient(135deg, #ffffff 0%, var(--accent-light) 100%);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 3rem;
+        margin-top: 5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+        .contact-card h4 {
+            color: var(--text-dark);
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+    .contact-info p {
+        color: var(--text-muted);
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        padding: 0.75rem;
+        background: white;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        border: 1px solid var(--border-color);
+    }
+
+        .contact-info p:hover {
+            background: var(--accent-light);
+            transform: translateX(5px);
+            border-color: var(--primary-color);
+        }
+
+    .contact-info i {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        margin-right: 1rem;
+        min-width: 24px;
+    }
+
+    .contact-info strong {
+        color: var(--text-dark);
+        margin-right: 0.5rem;
+    }
+
+    .map-container {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        height: 300px;
+        border: 2px solid var(--border-color);
+    }
+
+        .map-container iframe {
+            border: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+    /* Team Section */
+    .team-section {
+        margin-top: 5rem;
+        animation: fadeInUp 1s ease-out;
+    }
+
+        .team-section h4 {
+            color: var(--text-dark);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+        }
+
+            .team-section h4::after {
+                content: '';
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 60px;
+                height: 4px;
+                background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+                border-radius: 2px;
+            }
+
+    .team-card {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .team-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(22, 163, 74, 0.15);
+            border-color: var(--primary-color);
+        }
+
+    .team-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 1.5rem;
+        border: 4px solid var(--accent-light);
+        transition: all 0.4s ease;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .team-card:hover .team-avatar {
+        border-color: var(--primary-color);
+        transform: scale(1.1);
+        box-shadow: 0 15px 30px rgba(22, 163, 74, 0.2);
+    }
+
+    .team-card h6 {
+        color: var(--text-dark);
+        font-size: 1.125rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .team-role {
+        color: var(--primary-color);
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .team-description {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    /* Animations */
+    @@keyframes fadeInDown {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    @@keyframes fadeInLeft {
+        from
+
+    {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    }
+
+    @@keyframes fadeInRight {
+        from
+
+    {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* Responsive */
+    @@media (max-width: 991px) {
+        .about-header h2
+
+    {
+        font-size: 2rem;
+    }
+
+    .content-card {
+        padding: 2rem;
+        margin-top: 2rem;
+    }
+
+    .contact-card {
+        padding: 2rem;
+    }
+
+    .map-container {
+        height: 250px;
+        margin-top: 2rem;
+    }
+
+    }
+
+    @@media (max-width: 576px) {
+        .about-section
+
+    {
+        padding: 3rem 0;
+    }
+
+    .about-header {
+        margin-bottom: 3rem;
+    }
+
+        .about-header h2 {
+            font-size: 1.75rem;
+        }
+
+        .about-header p {
+            font-size: 1rem;
+        }
+
+    .content-card,
+    .contact-card {
+        padding: 1.5rem;
+    }
+
+    .team-section {
+        margin-top: 3rem;
+    }
+
+    }
+</style>
+
+<section class="about-section">
+    <div class="container">
+        <!-- Header -->
+        <div class="about-header">
+            <h2>KẾT NỐI XANH</h2>
+            <p>
+                Kết nối - Lan tỏa - Cống hiến vì một Việt Nam xanh, nhân ái và phát triển bền vững.
+            </p>
+        </div>
+
+        <div class="row align-items-stretch">
+            <!-- Hình minh họa -->
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="image-card">
+                    <img src="~/images/volunteer_team.png"
+                         alt="Về chúng tôi"
+                         onerror="this.src='~/images/default.png';" />
+                </div>
+            </div>
+
+            <!-- Nội dung chính -->
+            <div class="col-lg-6">
+                <div class="content-card">
+                    <h4>Về Chúng Tôi</h4>
+                    <p>
+                        <strong>Tình Nguyện Xanh</strong> là nền tảng kết nối các
+                        <strong>tổ chức xã hội</strong> với những <strong>tình nguyện viên</strong> trên khắp Việt Nam.
+                        Chúng tôi hướng đến việc tạo ra một không gian minh bạch, uy tín, nơi mọi người cùng nhau
+                        đóng góp vì cộng đồng và lan tỏa năng lượng tích cực.
+                    </p>
+
+                    <h5>Sứ Mệnh</h5>
+                    <p>
+                        Gắn kết người có tấm lòng thiện nguyện với các hoạt động xã hội thực tế.
+                        Thúc đẩy tính minh bạch trong các dự án thiện nguyện và bảo vệ môi trường.
+                        Truyền cảm hứng sống xanh – sống đẹp đến cộng đồng.
+                    </p>
+
+                    <h5>Tầm Nhìn</h5>
+                    <p>
+                        Trở thành nền tảng hàng đầu về kết nối tình nguyện,
+                        lan tỏa tinh thần trách nhiệm xã hội và nâng cao nhận thức cộng đồng.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liên hệ -->
+        <div class="contact-card">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h4>📞 Liên Hệ Với Chúng Tôi</h4>
+                    <div class="contact-info">
+                        <p>
+                            <i class="bi bi-envelope"></i>
+                            <strong>Email:</strong> support@tinhnguyenxanh.vn
+                        </p>
+                        <p>
+                            <i class="bi bi-telephone"></i>
+                            <strong>Hotline:</strong> 0123 456 789
+                        </p>
+                        <p>
+                            <i class="bi bi-geo-alt"></i>
+                            <strong>Địa chỉ:</strong> 475A Điện Biên Phủ, Q.Bình Thạnh, TP.HCM
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.3392246359235!2d106.70609297574058!3d10.786553689362059!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f3d7f7b25b7%3A0x1d017dd69b64f6ef!2zNDc1QSDEkGnhu4duIELDrG4gUGjhu6UsIFBoxrDhu51uZyAyLCBCw6xuaCBUaOG6oW5oLCBUUC5IQ00!5e0!3m2!1svi!2s!4v1709012345678!5m2!1svi!2s"
+                                allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Đội ngũ -->
+        <div class="team-section text-center">
+            <h4>ĐỘI NGŨ PHÁT TRIỂN</h4>
+            <div class="row justify-content-center">
+                <div class="col-md-4 mb-4">
+                    <div class="team-card">
+                        <img src="~/images/Loc.jpg" class="team-avatar" alt="Võ Tấn Lộc" />
+                        <h6>Võ Tấn Lộc</h6>
+                        <p class="team-role">Trưởng nhóm phát triển</p>
+                        <p class="team-description">Sinh viên Công nghệ phần mềm - HUTECH</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="team-card">
+                        <img src="~/images/Tai.jpg" class="team-avatar" alt="Nguyễn Hữu Tài" />
+                        <h6>Nguyễn Hữu Tài</h6>
+                        <p class="team-role">Thiết kế & giao diện</p>
+                        <p class="team-description">Sinh viên Công nghệ phần mềm - HUTECH</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="team-card">
+                        <img src="~/images/Thanh.jpg" class="team-avatar" alt="Nguyễn Trung Thành" />
+                        <h6>Nguyễn Trung Thành</h6>
+                        <p class="team-role">Phân tích hệ thống</p>
+                        <p class="team-description">Sinh viên Công nghệ phần mềm - HUTECH</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

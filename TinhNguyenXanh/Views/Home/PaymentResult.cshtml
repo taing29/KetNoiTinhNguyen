@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Kết quả thanh toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isSuccess = ViewBag.IsSuccess ?? false;
+}
+
+<style>
+    .result-card {
+        border-radius: 1rem;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+
+    .result-icon {
+        font-size: 4rem;
+        animation: popIn 0.6s ease;
+    }
+    @@keyframes popIn {
+        0%
+
+    {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    }
+
+    .btn-custom {
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+</style>
+
+<div class="container text-center" style="margin-top: 100px; margin-bottom: 100px;">
+    @if (isSuccess)
+    {
+        <div class="card result-card border-0 mx-auto bg-light" style="max-width: 520px;">
+            <div class="card-body p-5">
+                <i class="bi bi-check-circle-fill text-success result-icon"></i>
+                <h2 class="text-success fw-bold mt-3">Thanh toán Thành công!</h2>
+                <p class="lead mt-3">@ViewBag.Message</p>
+                <hr>
+                <p class="text-muted">Chúng tôi đã ghi nhận đóng góp của bạn. Xin chân thành cảm ơn!</p>
+                <a href="/" class="btn btn-success btn-custom mt-3">
+                    <i class="bi bi-house-door-fill me-2"></i> Về trang chủ
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card result-card border-0 mx-auto bg-light" style="max-width: 520px;">
+            <div class="card-body p-5">
+                <i class="bi bi-x-circle-fill text-danger result-icon"></i>
+                <h2 class="text-danger fw-bold mt-3">Thanh toán Thất bại</h2>
+                <p class="lead mt-3">@ViewBag.Message</p>
+                <hr>
+                <p class="text-muted">Vui lòng kiểm tra lại số dư hoặc thử lại sau.</p>
+                <a href="/Home/Donate" class="btn btn-danger btn-custom mt-3">
+                    <i class="bi bi-arrow-repeat me-2"></i> Thử lại
+                </a>
+            </div>
+        </div>
+    }
+</div>

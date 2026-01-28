@@ -1,0 +1,549 @@
+﻿@model IEnumerable<TinhNguyenXanh.Models.EventRegistration>
+@{
+    ViewData["Title"] = "Danh sách tình nguyện viên";
+    Layout = "~/Areas/Organizer/Views/Shared/_OrganizationLayout.cshtml";
+    var eventTitle = ViewBag.EventTitle as string;
+    var eventId = ViewBag.EventId as int?;
+    var totalVolunteers = Model?.Count() ?? 0;
+    var confirmedVolunteers = Model?.Count(r => r.Status == "Confirmed") ?? 0;
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+
+<style>
+    :root {
+        --primary-color: #16a34a;
+        --primary-hover: #15803d;
+        --accent-light: #f0fdf4;
+        --text-dark: #0f172a;
+        --text-muted: #64748b;
+        --border-color: #e5e7eb;
+        --bg-light: #ffffff;
+    }
+
+    body {
+        background: var(--bg-light);
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .volunteers-container {
+        background: #ffffff;
+        min-height: 100vh;
+        padding: 3rem 0;
+    }
+
+    .page-header {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), #10b981);
+        }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .header-info h4 {
+        color: var(--text-dark);
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .header-info h4 i {
+            color: var(--primary-color);
+        }
+
+    .event-name {
+        color: var(--text-muted);
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--accent-light);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+    }
+
+        .event-name i {
+            color: var(--primary-color);
+        }
+
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .stats-group {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .stats-badge {
+        background: var(--accent-light);
+        border: 1px solid #bbf7d0;
+        padding: 0.75rem 1.25rem;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+        .stats-badge i {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+    .stats-info .number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        line-height: 1;
+    }
+
+    .stats-info .label {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    .btn-back {
+        background: white;
+        color: var(--text-dark);
+        border: 2px solid var(--border-color);
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+        .btn-back:hover {
+            background: #f9fafb;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+    .btn-export {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+        .btn-export:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+        }
+
+    .filter-section {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .form-control, .form-select {
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+            outline: none;
+        }
+
+    .input-group-text {
+        background: white;
+        border: 1px solid var(--border-color);
+        color: var(--primary-color);
+    }
+
+    .table-container {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .table {
+        margin: 0;
+    }
+
+        .table thead {
+            background: var(--accent-light);
+        }
+
+            .table thead th {
+                color: var(--text-dark);
+                font-weight: 700;
+                font-size: 0.9rem;
+                padding: 1.25rem 1rem;
+                border-bottom: 2px solid var(--border-color);
+                white-space: nowrap;
+            }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .table tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+            .table tbody tr:hover {
+                background: #f9fafb;
+            }
+
+    .volunteer-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .volunteer-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--primary-color), #10b981);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .volunteer-details {
+        flex: 1;
+    }
+
+        .volunteer-details .name {
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .volunteer-details .contact {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+            .volunteer-details .contact i {
+                font-size: 0.75rem;
+            }
+
+    .status-badge {
+        padding: 0.4rem 0.875rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+    }
+
+    .status-confirmed {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+        .status-confirmed i {
+            color: var(--primary-color);
+        }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+        .status-pending i {
+            color: #f59e0b;
+        }
+
+    .status-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+        .status-rejected i {
+            color: #dc2626;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h5 {
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .empty-state p {
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+    media (max-width: 991px) {
+        .volunteers-container
+
+    {
+        padding: 2rem 0;
+    }
+
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .stats-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .stats-badge {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    }
+
+    media (max-width: 768px) {
+        .page-header
+
+    {
+        padding: 1.5rem;
+    }
+
+    .header-info h4 {
+        font-size: 1.25rem;
+    }
+
+    .volunteer-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    }
+</style>
+<div class="volunteers-container">
+    <div class="container">
+        <div class="page-header mb-4 p-4 border rounded shadow-sm bg-white">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h4 class="fw-bold mb-2"><i class="bi bi-people-fill text-primary"></i> Danh sách tình nguyện viên</h4>
+                    @if (!string.IsNullOrEmpty(eventTitle))
+                    {
+                        <div class="badge bg-light text-dark p-2 border"><i class="bi bi-calendar-event me-2 text-primary"></i> @eventTitle</div>
+                    }
+                </div>
+                <div class="d-flex gap-3">
+                    <div class="border rounded p-2 px-3 bg-light"><span class="fw-bold text-success">@confirmedVolunteers</span> <span class="text-muted small">Đã duyệt</span></div>
+                    <div class="border rounded p-2 px-3 bg-light"><span class="fw-bold text-primary">@totalVolunteers</span> <span class="text-muted small">Tổng đăng ký</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" id="searchInput" placeholder="🔍 Tìm kiếm theo tên, SĐT...">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="statusFilter">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="Confirmed">Đã duyệt</option>
+                            <option value="Pending">Chờ duyệt</option>
+                            <option value="Rejected">Từ chối</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5 text-end">
+                        <button class="btn btn-success" onclick="exportToExcel()"><i class="bi bi-file-earmark-excel"></i> Xuất Excel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5 border rounded bg-white">
+                <i class="bi bi-inbox display-1 text-muted"></i>
+                <h5 class="mt-3">Chưa có dữ liệu</h5>
+            </div>
+        }
+        else
+        {
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0" id="volunteersTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">STT</th>
+                                    <th>Tình nguyện viên</th>
+                                    <th>Liên hệ</th>
+                                    <th>Lý do</th>
+                                    <th>Ngày đăng ký</th>
+                                    <th>Trạng thái</th>
+                                    <th class="text-end pe-4">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int index = 1;
+                                }
+                                @foreach (var item in Model)
+                                {
+                                    <tr data-status="@item.Status">
+                                        <td class="ps-4">@index</td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="volunteer-avatar">@(item.FullName?.Substring(0, 1).ToUpper() ?? "U")</div>
+                                                <div>
+                                                    <div class="fw-bold text-dark">@item.FullName</div>
+                                                    <small class="text-muted">ID: @item.VolunteerId</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="small"><i class="bi bi-telephone me-1"></i> @item.Phone</div>
+                                            <div class="small text-muted"><i class="bi bi-envelope me-1"></i> @(item.Volunteer?.User?.Email ?? "--")</div>
+                                        </td>
+                                        <td>
+                                            <span class="d-inline-block text-truncate" style="max-width: 150px;" title="@item.Reason">
+                                                @(string.IsNullOrEmpty(item.Reason) ? "--" : item.Reason)
+                                            </span>
+                                        </td>
+                                        <td>@item.RegisteredDate.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            @if (item.Status == "Confirmed")
+                                            {
+                                                <span class="status-badge status-confirmed"><i class="bi bi-check-circle-fill"></i> Đã duyệt</span>
+                                            }
+                                            else if (item.Status == "Pending")
+                                            {
+
+                                                <span class="status-badge status-pending"><i class="bi bi-hourglass-split"></i> Chờ duyệt</span>
+                                            }
+                                            else
+                                            {
+
+                                                <span class="status-badge status-rejected"><i class="bi bi-x-circle-fill"></i> Từ chối</span>
+                                            }
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            <div class="btn-action-group justify-content-end">
+                                                <a asp-action="VolunteerDetails" asp-route-id="@item.Id"
+                                                   class="btn btn-sm btn-outline-primary" title="Xem đơn đăng ký">
+                                                    <i class="bi bi-file-text"></i> Chi tiết
+                                                </a>
+
+                                                <a asp-action="History" asp-route-volunteerId="@item.VolunteerId"
+                                                   class="btn btn-sm btn-info text-white" title="Lịch sử hoạt động">
+                                                    <i class="bi bi-clock-history"></i> Lịch sử
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    index++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script>
+        // Search & Filter Logic (Giữ nguyên)
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('#volunteersTable tbody tr').forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+            });
+        });
+
+        document.getElementById('statusFilter').addEventListener('change', function(e) {
+            const status = e.target.value;
+            document.querySelectorAll('#volunteersTable tbody tr').forEach(row => {
+                row.style.display = (status === '' || row.dataset.status === status) ? '' : 'none';
+            });
+        });
+
+        function exportToExcel() {
+            const wb = XLSX.utils.table_to_book(document.getElementById('volunteersTable'), {sheet: "Sheet1"});
+            XLSX.writeFile(wb, 'DanhSachTNV.xlsx');
+        }
+    </script>
+}

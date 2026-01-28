@@ -1,0 +1,300 @@
+﻿@model TinhNguyenXanh.DTOs.VolunteerProfileDTO
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+}
+
+<style>
+    /* Biến CSS (Giữ nguyên từ lần trước để đồng bộ màu sắc) */
+    :root {
+        --primary-color: #16a34a; /* Green */
+        --primary-hover: #15803d;
+        --border-color: #e5e7eb;
+        --text-dark: #0f172a;
+        --text-muted: #64748b;
+        --bg-light: #f8f9fa;
+    }
+
+    body {
+        background-color: var(--bg-light);
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); /* Shadow mạnh hơn */
+        border: 1px solid var(--border-color);
+        overflow: hidden; /* Quan trọng để Card không bị tràn */
+    }
+
+    .sidebar-section {
+        background: var(--primary-color);
+        color: white;
+        padding: 2rem 1.5rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .profile-avatar-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+
+    .profile-avatar {
+        width: 150px; /* Lớn hơn một chút */
+        height: 150px;
+        border-radius: 50%;
+        background-color: white;
+        border: 5px solid rgba(255, 255, 255, 0.7);
+        object-fit: cover;
+    }
+
+    /* Nút Upload nhỏ bên dưới Avatar */
+    .avatar-upload-icon {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        background-color: white;
+        color: var(--primary-color);
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s;
+    }
+
+        .avatar-upload-icon:hover {
+            background-color: var(--bg-light);
+            color: var(--primary-hover);
+        }
+
+    .profile-main-content {
+        padding: 2.5rem;
+    }
+
+    .input-group-text {
+        color: var(--primary-color);
+        background-color: var(--bg-light);
+        border-right: none;
+    }
+
+    .form-group-header {
+        font-weight: 700;
+        color: var(--primary-color);
+        font-size: 1.25rem;
+        margin-top: 2rem;
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--border-color);
+    }
+
+    .btn-success {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        transition: all 0.3s ease;
+    }
+
+    .text-muted-white {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+</style>
+
+<div class="container py-5">
+    <h2 class="mb-5 text-center text-dark">
+        <i class="bi bi-person-badge-fill me-2"></i>
+        Hồ sơ Cá nhân Tình nguyện viên
+    </h2>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="profile-card">
+                <div class="row g-0">
+
+                    <div class="col-lg-4 d-flex flex-column">
+                        <div class="sidebar-section flex-grow-1">
+
+                            <div class="profile-avatar-container" data-bs-toggle="modal" data-bs-target="#uploadAvatarModal">
+                                <img id="profile-img-preview"
+                                     src="@(string.IsNullOrEmpty(Model.AvatarUrl) ? "/images/default-avatar.png" : Model.AvatarUrl)"
+                                     class="profile-avatar" alt="Avatar" />
+                                <div class="avatar-upload-icon">
+                                    <i class="bi bi-camera-fill"></i>
+                                </div>
+                            </div>
+
+                            <div class="sidebar-info">
+                                <h4 class="mb-0 text-white">@Model.FullName</h4>
+                                <span class="text-muted-white">@Model.Email</span>
+                            </div>
+
+                            <hr style="width: 60%; opacity: 0.5; margin: 1.5rem auto;" />
+
+                            <p class="mt-3 text-muted-white" style="font-size: 0.9rem;">
+                                "Thông tin chi tiết giúp các Tổ chức dễ dàng kết nối bạn với những hoạt động phù hợp nhất."
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8">
+                        <div class="profile-main-content">
+
+                            @if (TempData["Message"] != null)
+                            {
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    @TempData["Message"]
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    @TempData["Error"]
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            }
+
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                            <form asp-action="Profile" method="post">
+
+                                <h4 class="form-group-header">Thông tin Cá nhân</h4>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="FullName" class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                            <input asp-for="FullName" class="form-control" />
+                                        </div>
+                                        <span asp-validation-for="FullName" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Phone" class="form-label">Số điện thoại</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-phone-fill"></i></span>
+                                            <input asp-for="Phone" class="form-control" />
+                                        </div>
+                                        <span asp-validation-for="Phone" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Email" class="form-label">Email</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                                            <input asp-for="Email" class="form-control" readonly />
+                                        </div>
+                                        <small class="text-muted">Email được quản lý bởi tài khoản.</small>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Address" class="form-label">Địa chỉ (Tỉnh/Thành phố)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
+                                            <input asp-for="Address" class="form-control" />
+                                        </div>
+                                        <span asp-validation-for="Address" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <h4 class="form-group-header">Kỹ năng & Giới thiệu</h4>
+
+                                <div class="mb-3">
+                                    <label asp-for="Skills" class="form-label">Kỹ năng nổi bật</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-tools"></i></span>
+                                        <input asp-for="Skills" class="form-control" placeholder="Ví dụ: Thiết kế đồ họa, Giao tiếp, Tiếng Anh" />
+                                    </div>
+                                    <span asp-validation-for="Skills" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label asp-for="Bio" class="form-label">Giới thiệu bản thân (Mục tiêu tình nguyện, kinh nghiệm)</label>
+                                    <textarea asp-for="Bio" class="form-control" rows="4" placeholder="Chia sẻ kinh nghiệm hoặc động lực tham gia hoạt động tình nguyện..."></textarea>
+                                    <span asp-validation-for="Bio" class="text-danger"></span>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="bi bi-check-circle-fill me-2"></i>
+                                        Lưu Cập nhật Hồ sơ
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="uploadAvatarModal" tabindex="-1" aria-labelledby="uploadAvatarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form asp-action="UploadAvatar" method="post" enctype="multipart/form-data">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="uploadAvatarModalLabel">Tải Ảnh Đại Diện</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="avatar-preview"
+                         src="@(string.IsNullOrEmpty(Model.AvatarUrl) ? "/images/default-avatar.png" : Model.AvatarUrl)"
+                         alt="Ảnh xem trước" class="profile-avatar mb-3" style="width: 120px; height: 120px; border: 3px solid var(--border-color);" />
+
+                    <div class="mb-3">
+                        <label for="avatarFileInput" class="form-label">Chọn ảnh (Max 5MB, JPG/PNG/WebP)</label>
+                        <input type="file" class="form-control" id="avatarFileInput" name="avatarFile" accept=".jpg,.jpeg,.png,.webp" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-cloud-upload-fill me-2"></i>
+                        Tải lên
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // Logic xem trước ảnh khi chọn file trong Modal
+            $('#avatarFileInput').change(function () {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#avatar-preview').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    // Nếu không có file được chọn, đặt lại ảnh mặc định
+                    $('#avatar-preview').attr('src', "@(string.IsNullOrEmpty(Model.AvatarUrl) ? "/images/default-avatar.png" : Model.AvatarUrl)");
+                }
+            });
+
+            // Khi modal đóng, đặt lại trạng thái file input
+            $('#uploadAvatarModal').on('hidden.bs.modal', function () {
+                $('#avatarFileInput').val('');
+                // Đặt lại ảnh preview về ảnh hiện tại của Model
+                $('#avatar-preview').attr('src', $('#profile-img-preview').attr('src'));
+            });
+        });
+    </script>
+}

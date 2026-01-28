@@ -1,0 +1,35 @@
+﻿@model TinhNguyenXanh.Models.EventComment
+@using System.Security.Claims
+@inject TinhNguyenXanh.Data.ApplicationDbContext _context
+
+@{
+    // Tìm volunteer theo UserId; fallback về ảnh mặc định nếu không tìm thấy
+    var volunteer = _context.Volunteers.FirstOrDefault(v => v.UserId == Model.UserId);
+    var avatar = volunteer?.AvatarUrl ?? "/images/default-avatar.png";
+    var displayName = volunteer?.FullName ?? Model.User?.FullName ?? "Người dùng";
+}
+
+<div class="comment-item d-flex" data-comment-id="@Model.Id">
+    <div class="me-3">
+        <img src="@avatar" class="comment-avatar" alt="avatar" />
+    </div>
+    <div class="flex-grow-1">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <strong>@displayName</strong>
+                <div class="comment-meta">@Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+            </div>
+            <div>
+                @if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    if (User.IsInRole("Admin"))
+                    {
+                        <button class="btn btn-sm btn-link text-danger btn-delete-comment" data-id="@Model.Id">Xóa</button>
+                    }
+                }
+            </div>
+        </div>
+        <div class="mt-2 comment-content">@Html.Raw(Html.Encode(Model.Content).Replace("\n", "<br/>"))</div>
+    </div>
+</div>

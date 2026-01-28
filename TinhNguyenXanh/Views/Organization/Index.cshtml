@@ -1,0 +1,635 @@
+﻿@model IEnumerable<TinhNguyenXanh.DTOs.OrganizationDTO>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Danh sách tổ chức xã hội";
+    var totalOrganizations = ViewBag.TotalCount ?? 0;
+    var news = ViewBag.News as IEnumerable<dynamic>;
+}
+
+<style>
+    :root {
+        --primary-color: #16a34a;
+        --primary-hover: #15803d;
+        --accent-light: #f0fdf4;
+        --text-dark: #0f172a;
+        --text-muted: #64748b;
+        --border-color: #e5e7eb;
+        --bg-light: #ffffff;
+    }
+
+    .org-list-container {
+        background: #ffffff;
+        min-height: 100vh;
+        padding: 3rem 0;
+    }
+
+    /* Header Bar */
+    .filter-header {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .filter-header h6 {
+            color: var(--text-dark);
+            font-size: 1.1rem;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .filter-header strong {
+            color: var(--primary-color);
+            font-size: 1.25rem;
+        }
+
+    .filter-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: var(--accent-light);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .filter-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .filter-btn i {
+            font-size: 1.1rem;
+        }
+
+    /* Organization Card */
+    .org-card {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+        .org-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .org-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-color);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .org-card:hover::before {
+            transform: scaleY(1);
+        }
+
+    /* Save Button */
+    .save-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .save-btn:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+            .save-btn:hover i {
+                color: white !important;
+            }
+
+        .save-btn i {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+
+            .save-btn i.bi-bookmark-fill {
+                color: var(--primary-color);
+            }
+
+    /* Organization Image */
+    .org-image {
+        width: 100%;
+        height: 220px;
+        object-fit: contain;
+        transition: transform 0.5s ease;
+        padding: 1rem;
+        background: white;
+    }
+
+    .org-card:hover .org-image {
+        transform: scale(1.05);
+    }
+
+    .org-image-container {
+        overflow: hidden;
+        position: relative;
+        background: var(--accent-light);
+    }
+
+    /* Organization Content */
+    .org-content {
+        padding: 1.5rem;
+    }
+
+    .org-title {
+        color: var(--text-dark);
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .org-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .org-info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+        .org-info-item i {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            min-width: 20px;
+        }
+
+    .org-description {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* Badge */
+    .verify-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+        .verify-badge.verified {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .verify-badge.unverified {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+    /* View Details Button */
+    .btn-details {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.625rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-details:hover {
+            background: var(--primary-hover);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 41, 59, 0.3);
+        }
+
+    /* News Section */
+    .news-section {
+        position: sticky;
+        top: 2rem;
+    }
+
+    .news-title {
+        color: var(--text-dark);
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 3px solid var(--primary-color);
+        display: inline-block;
+    }
+
+    .news-item {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .news-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary-color);
+        }
+
+    .news-image {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+
+    .news-content {
+        flex: 1;
+    }
+
+        .news-content p {
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            margin: 0 0 0.5rem 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+    .news-date {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+    }
+
+    /* Pagination */
+    .pagination-container {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .pagination {
+        gap: 0.5rem;
+    }
+
+    .page-item .page-link {
+        border: 1px solid var(--border-color);
+        color: var(--text-dark);
+        padding: 0.5rem 0.875rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .page-item .page-link:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+    .page-item.active .page-link {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+    .page-item.disabled .page-link {
+        background: var(--accent-light);
+        border-color: var(--border-color);
+        color: var(--text-muted);
+    }
+
+    /* Empty State */
+    .empty-state {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 3rem 2rem;
+        text-align: center;
+        color: var(--text-muted);
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+    /* Responsive */
+    @@media (max-width: 991px) {
+        .org-list-container
+
+    {
+        padding: 2rem 0;
+    }
+
+    .filter-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .news-section {
+        position: static;
+        margin-top: 3rem;
+    }
+
+    .org-content {
+        padding: 1.25rem;
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        .org-card
+
+    {
+        margin-bottom: 1.25rem;
+    }
+
+    .org-image {
+        height: 180px;
+    }
+
+    .org-title {
+        font-size: 1.1rem;
+    }
+
+    .filter-header h6 {
+        font-size: 1rem;
+    }
+
+    .news-image {
+        width: 70px;
+        height: 70px;
+    }
+
+    }
+</style>
+
+<div class="org-list-container">
+    <div class="container">
+        <!-- Header -->
+        <div class="filter-header">
+            <h6>
+                <strong>@totalOrganizations</strong> tổ chức đang hoạt động
+            </h6>
+            <div class="filter-btn">
+                <i class="bi bi-funnel"></i>
+                <span class="fw-semibold">Bộ lọc</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Organization List -->
+            <div class="col-lg-8">
+                @foreach (var org in Model)
+                {
+                    <div class="org-card">
+                        <!-- Save Button -->
+                        <button class="save-btn" data-org-id="@org.Id" title="Lưu tổ chức">
+                            <i class="bi bi-bookmark"></i>
+                        </button>
+
+                        <div class="row g-0">
+                            <div class="col-md-5">
+                                <div class="org-image-container">
+                                    <img src="@(org.AvatarUrl ?? "/images/default-org.png")" class="org-image" alt="@org.Name" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-7">
+                                <div class="org-content">
+                                    <h5 class="org-title">@org.Name</h5>
+
+                                    <div class="org-info">
+                                        <div class="org-info-item">
+                                            <i class="bi bi-person-circle"></i>
+                                            <span>@org.UserName</span>
+                                        </div>
+                                        <div class="org-info-item">
+                                            <i class="bi bi-calendar-event"></i>
+                                            <span>Tham gia ngày @org.JoinedDate.ToString("dd/MM/yyyy")</span>
+                                        </div>
+                                    </div>
+
+                                    @if (!string.IsNullOrEmpty(org.Description))
+                                    {
+                                        <p class="org-description">@org.Description</p>
+                                    }
+
+                                    @* Uncomment if you want to show verification status
+                                    <div class="verify-badge @(org.Verified ? "verified" : "unverified")">
+                                        <i class="bi @(org.Verified ? "bi-check-circle-fill" : "bi-exclamation-circle-fill")"></i>
+                                        <span>@(org.Verified ? "Đã xác minh" : "Chưa xác minh")</span>
+                                    </div>
+                                    *@
+
+                                    <div class="text-end">
+                                        <a href="@Url.Action("Details", "Organization", new { area = "Organization", id = org.Id })"
+                                           class="btn-details">
+                                            Xem chi tiết
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (!Model.Any())
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p class="mb-0">Hiện chưa có tổ chức nào trong hệ thống.</p>
+                    </div>
+                }
+
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <nav>
+                        @{
+                            int currentPage = ViewBag.Page ?? 1;
+                            int pageSize = ViewBag.PageSize ?? 5; // Mặc định 5
+                            int totalCount = ViewBag.TotalCount ?? 0;
+                            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+                        }
+
+                        @if (totalPages > 1)
+                        {
+                            <ul class="pagination justify-content-center mb-0">
+                                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                                    <a class="page-link"
+                                       href="@(currentPage == 1 ? "#" : Url.Action("Index", "Organization", new { page = currentPage - 1, keyword = ViewBag.Keyword }))">
+                                        &lt;
+                                    </a>
+                                </li>
+
+                                @{
+                                    int startPage = Math.Max(1, currentPage - 2);
+                                    int endPage = Math.Min(totalPages, currentPage + 2);
+
+                                    // Luôn hiện trang 1
+                                    if (startPage > 1)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" href="@Url.Action("Index", "Organization", new { page = 1, keyword = ViewBag.Keyword })">1</a>
+                                        </li>
+                                        if (startPage > 2)
+                                        {
+                                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                                        }
+                                    }
+
+                                    // Các trang ở giữa
+                                    for (int i = startPage; i <= endPage; i++)
+                                    {
+                                        <li class="page-item @(i == currentPage ? "active" : "")">
+                                            <a class="page-link" href="@Url.Action("Index", "Organization", new { page = i, keyword = ViewBag.Keyword })">@i</a>
+                                        </li>
+                                    }
+
+                                    // Luôn hiện trang cuối
+                                    if (endPage < totalPages)
+                                    {
+                                        if (endPage < totalPages - 1)
+                                        {
+                                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                                        }
+                                        <li class="page-item">
+                                            <a class="page-link" href="@Url.Action("Index", "Organization", new { page = totalPages, keyword = ViewBag.Keyword })">@totalPages</a>
+                                        </li>
+                                    }
+                                }
+
+                                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                                    <a class="page-link"
+                                       href="@(currentPage == totalPages ? "#" : Url.Action("Index", "Organization", new { page = currentPage + 1, keyword = ViewBag.Keyword }))">
+                                        &gt;
+                                    </a>
+                                </li>
+                            </ul>
+                        }
+                    </nav>
+                </div>
+            </div>
+
+            <!-- News Section -->
+            <div class="col-lg-4">
+                <div class="news-section">
+                    <h5 class="news-title">Tin tức</h5>
+
+                    @if (news != null && news.Any())
+                    {
+                        foreach (var item in news)
+                        {
+                            <a href="@Url.Action("Details", "Event", new { id = item.Id })"
+                               class="news-item text-decoration-none d-block">
+                                <div class="d-flex gap-3 align-items-center">
+                                    <img src="@(string.IsNullOrEmpty((string)item.Images) ? "/images/default-event.png" : (string)item.Images)"
+                                         class="news-image"
+                                         alt="@item.Title"
+                                         onerror="this.src='/images/default-event.png';" />
+                                    <div class="news-content">
+                                        <p>@item.Title</p>
+                                        <small class="news-date">
+                                            <i class="bi bi-calendar me-1"></i>
+                                            @(((DateTime)item.StartTime).ToString("dd/MM/yyyy"))
+                                        </small>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-newspaper"></i>
+                            <p class="mb-0">Chưa có tin tức.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Save button functionality
+        document.querySelectorAll(".save-btn").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                const icon = this.querySelector("i");
+                const isSaved = icon.classList.contains("bi-bookmark-fill");
+
+                if (isSaved) {
+                    icon.classList.remove("bi-bookmark-fill");
+                    icon.classList.add("bi-bookmark");
+                    this.title = "Lưu tổ chức";
+                } else {
+                    icon.classList.remove("bi-bookmark");
+                    icon.classList.add("bi-bookmark-fill");
+                    this.title = "Đã lưu";
+                }
+
+                // Optional: Send AJAX request to save
+                // fetch(`/Organization/Save/${this.dataset.orgId}`, { method: 'POST' });
+            });
+        });
+    </script>
+}

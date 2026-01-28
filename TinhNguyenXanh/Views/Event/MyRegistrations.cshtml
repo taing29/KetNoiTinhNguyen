@@ -1,0 +1,428 @@
+﻿@model IEnumerable<TinhNguyenXanh.Models.EventRegistration>
+@{
+    ViewData["Title"] = "Đăng ký của tôi";
+}
+
+<style>
+    :root {
+        --primary-color: #16a34a;
+        --primary-hover: #15803d;
+        --accent-light: #f0fdf4;
+        --text-dark: #0f172a;
+        --text-muted: #64748b;
+        --border-color: #e5e7eb;
+        --bg-light: #ffffff;
+    }
+
+    body {
+        background: var(--bg-light);
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .registrations-container {
+        background: #ffffff;
+        min-height: 100vh;
+        padding: 3rem 0;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), #10b981);
+        }
+
+        .page-header h4 {
+            color: var(--text-dark);
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .page-header h4 i {
+                color: var(--primary-color);
+                font-size: 1.75rem;
+            }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+
+    /* Registration Card */
+    .registration-card {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .registration-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-color);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .registration-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+            .registration-card:hover::before {
+                transform: scaleY(1);
+            }
+
+    .card-body-custom {
+        padding: 1.75rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .event-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: var(--accent-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+        .event-icon i {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+    .event-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .event-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+        flex: 1;
+    }
+
+    .event-info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+        .event-info-item i {
+            color: var(--primary-color);
+            font-size: 1rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+    /* Status Badges */
+    .badge-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        margin-bottom: 1.25rem;
+    }
+
+    .badge-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+        .badge-pending i {
+            color: #f59e0b;
+        }
+
+    .badge-confirmed {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+        .badge-confirmed i {
+            color: var(--primary-color);
+        }
+
+    .badge-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+        .badge-rejected i {
+            color: #dc2626;
+        }
+
+    /* Action Buttons */
+    .card-actions {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: auto;
+    }
+
+    .btn-detail {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.25rem;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        flex: 1;
+        text-decoration: none;
+    }
+
+        .btn-detail:hover {
+            background: var(--primary-hover);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+        }
+
+        .btn-detail i {
+            font-size: 1rem;
+        }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h5 {
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .empty-state p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+    .btn-primary-action {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.875rem 2rem;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+        .btn-primary-action:hover {
+            background: var(--primary-hover);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(22, 163, 74, 0.3);
+        }
+
+        .btn-primary-action i {
+            font-size: 1.1rem;
+        }
+
+    /* Responsive */
+    @@media (max-width: 991px) {
+        .registrations-container {
+            padding: 2rem 0;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+            .page-header h4 {
+                font-size: 1.5rem;
+                justify-content: center;
+            }
+
+            .page-header p {
+                font-size: 0.9rem;
+            }
+
+        .card-body-custom {
+            padding: 1.5rem;
+        }
+
+        .event-title {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="registrations-container">
+    <div class="container">
+        <div class="page-header">
+            <h4>
+                <i class="bi bi-hand-thumbs-up-fill"></i>
+                Đăng ký của tôi
+            </h4>
+            <p>Theo dõi trạng thái các hoạt động tình nguyện bạn đã đăng ký</p>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <i class="bi bi-clipboard-x"></i>
+                <h5>Chưa có đăng ký nào</h5>
+                <p>Bạn chưa đăng ký tham gia hoạt động tình nguyện nào. Hãy khám phá và tham gia ngay!</p>
+                <a asp-action="Index" asp-controller="Event" class="btn-primary-action">
+                    <i class="bi bi-search"></i>
+                    <span>Tìm kiếm sự kiện</span>
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="mb-4">
+                <span class="text-muted">
+                    <strong class="text-success fs-4 me-1">@Model.Count()</strong> đăng ký
+                </span>
+            </div>
+            
+            <div class="row g-3 g-lg-4">
+                @foreach (var r in Model)
+                {
+                    var badgeClass = r.Status switch
+                    {
+                        "Pending" => "badge-status badge-pending",
+                        "Confirmed" => "badge-status badge-confirmed",
+                        "Rejected" => "badge-status badge-rejected",
+                        _ => "badge-status badge-pending"
+                    };
+                    var badgeText = r.Status switch
+                    {
+                        "Pending" => "Chờ duyệt",
+                        "Confirmed" => "Đã duyệt",
+                        "Rejected" => "Từ chối",
+                        _ => r.Status
+                    };
+                    var badgeIcon = r.Status switch
+                    {
+                        "Pending" => "bi-hourglass-split",
+                        "Confirmed" => "bi-check-circle-fill",
+                        "Rejected" => "bi-x-circle-fill",
+                        _ => "bi-hourglass-split"
+                    };
+
+                    <div class="col-md-6 col-lg-4" data-status="@r.Status.ToLower()">
+                        <div class="registration-card">
+                            <div class="card-body-custom">
+                                <div class="event-icon">
+                                    <i class="bi bi-calendar-event"></i>
+                                </div>
+                                <h6 class="event-title">@r.Event.Title</h6>
+
+                                <div class="event-info">
+                                    <div class="event-info-item">
+                                        <i class="bi bi-clock"></i>
+                                        <span>@r.Event.StartTime.ToString("dd/MM/yyyy HH:mm") - @r.Event.EndTime.ToString("HH:mm")</span>
+                                    </div>
+                                    <div class="event-info-item">
+                                        <i class="bi bi-geo-alt"></i>
+                                        <span>@r.Event.Location</span>
+                                    </div>
+                                    <div class="event-info-item">
+                                        <i class="bi bi-calendar-check"></i>
+                                        <span>Đăng ký: @r.RegisteredDate.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                </div>
+
+                                <span class="@badgeClass">
+                                    <i class="bi @badgeIcon"></i>
+                                    @badgeText
+                                </span>
+
+                                <div class="card-actions">
+                                    <a asp-action="Details" asp-controller="Event" asp-route-id="@r.EventId" class="btn-detail">
+                                        <i class="bi bi-eye-fill"></i>
+                                        <span>Xem chi tiết</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@* Loại bỏ script lọc vì không còn nút để kích hoạt *@
+@section Scripts {
+    <script>
+        // Không còn mã lọc trạng thái
+    </script>
+}

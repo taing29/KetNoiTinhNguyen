@@ -1,0 +1,611 @@
+﻿@using TinhNguyenXanh.Models.ViewModel
+@model SearchResultsViewModel
+
+@{
+    ViewData["Title"] = "Kết quả tìm kiếm";
+}
+
+<style>
+    :root {
+        --primary-color: #16a34a;
+        --primary-hover: #15803d;
+        --primary-light: #dcfce7;
+        --secondary-color: #3b82f6;
+        --secondary-hover: #2563eb;
+        --secondary-light: #dbeafe;
+        --text-dark: #0f172a;
+        --text-muted: #64748b;
+        --border-color: #e5e7eb;
+        --bg-light: #f8fafc;
+    }
+
+    /* ===== CONTAINER ===== */
+    .search-results-container {
+        background: linear-gradient(to bottom, var(--bg-light) 0%, #ffffff 100%);
+        min-height: 100vh;
+        padding: 3rem 0 5rem 0;
+    }
+
+    /* ===== HEADER ===== */
+    .search-header {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem 2rem;
+        margin-bottom: 3rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        text-align: center;
+    }
+
+        .search-header h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+        }
+
+        .search-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+    .search-keyword {
+        color: var(--primary-color);
+        font-weight: 700;
+        background: var(--primary-light);
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+    }
+
+    /* ===== SECTION HEADERS ===== */
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid var(--primary-color);
+    }
+
+        .section-header.events {
+            border-bottom-color: var(--primary-color);
+        }
+
+        .section-header.organizations {
+            border-bottom-color: var(--secondary-color);
+        }
+
+        .section-header h4 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .section-header.events h4 {
+            color: var(--primary-color);
+        }
+
+        .section-header.organizations h4 {
+            color: var(--secondary-color);
+        }
+
+        .section-header i {
+            font-size: 1.75rem;
+        }
+
+    .count-badge {
+        background: var(--primary-color);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-left: auto;
+    }
+
+    .section-header.organizations .count-badge {
+        background: var(--secondary-color);
+    }
+
+    /* ===== RESULT CARDS ===== */
+    .result-card {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+        .result-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border-color: var(--primary-color);
+        }
+
+        .result-card.org:hover {
+            border-color: var(--secondary-color);
+        }
+
+    /* ===== IMAGES ===== */
+    .result-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .result-card:hover .result-image {
+        transform: scale(1.05);
+    }
+
+    .image-wrapper {
+        overflow: hidden;
+        position: relative;
+        background: var(--bg-light);
+    }
+
+    .image-overlay {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 0.375rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        backdrop-filter: blur(8px);
+    }
+
+        .image-overlay.event {
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .image-overlay.org {
+            color: var(--secondary-color);
+            border: 1px solid var(--secondary-color);
+        }
+
+    /* ===== CARD BODY ===== */
+    .result-body {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .result-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        line-height: 1.4;
+        height: 2.8em;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+        .result-title.event {
+            color: var(--primary-color);
+        }
+
+        .result-title.org {
+            color: var(--secondary-color);
+        }
+
+    .result-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+        .result-info i {
+            color: var(--primary-color);
+            font-size: 1rem;
+            min-width: 16px;
+        }
+
+        .result-info.org i {
+            color: var(--secondary-color);
+        }
+
+    /* ===== BADGES ===== */
+    .result-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        width: fit-content;
+    }
+
+        .result-badge.category {
+            background: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .result-badge.verified {
+            background: var(--secondary-light);
+            color: var(--secondary-color);
+        }
+
+    /* ===== BUTTONS ===== */
+    .result-footer {
+        margin-top: auto;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .btn-view-detail {
+        padding: 0.5rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-view-detail.event {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+            .btn-view-detail.event:hover {
+                background: var(--primary-color);
+                color: white;
+                transform: translateX(4px);
+            }
+
+        .btn-view-detail.org {
+            background: white;
+            color: var(--secondary-color);
+            border: 2px solid var(--secondary-color);
+        }
+
+            .btn-view-detail.org:hover {
+                background: var(--secondary-color);
+                color: white;
+                transform: translateX(4px);
+            }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+        background: white;
+        border: 2px dashed var(--border-color);
+        border-radius: 16px;
+        padding: 3rem 2rem;
+        text-align: center;
+        color: var(--text-muted);
+    }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #d1d5db;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+    /* ===== BACK BUTTON ===== */
+    .back-section {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        margin-top: 4rem;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .btn-back {
+        background: white;
+        color: var(--text-dark);
+        border: 2px solid var(--border-color);
+        padding: 0.75rem 2rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-back:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            transform: translateX(-4px);
+        }
+
+    /* ===== RESPONSIVE ===== */
+    @@media (max-width: 991px) {
+        .search-header
+
+    {
+        padding: 2rem 1.5rem;
+    }
+
+    .search-header h2 {
+        font-size: 1.75rem;
+    }
+
+    .section-header h4 {
+        font-size: 1.25rem;
+    }
+
+    .result-image {
+        height: 180px;
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        .search-results-container
+
+    {
+        padding: 2rem 0 3rem 0;
+    }
+
+    .search-header {
+        padding: 1.5rem 1rem;
+        margin-bottom: 2rem;
+    }
+
+        .search-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .search-header p {
+            font-size: 1rem;
+        }
+
+    .section-header {
+        flex-wrap: wrap;
+    }
+
+    .count-badge {
+        margin-left: 0;
+    }
+
+    .result-body {
+        padding: 1.25rem;
+    }
+
+    .result-title {
+        font-size: 1rem;
+    }
+
+    .empty-state {
+        padding: 2rem 1rem;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+        }
+
+    .back-section {
+        margin-top: 2rem;
+        padding: 1.5rem;
+    }
+
+    }
+</style>
+
+<div class="search-results-container">
+    <div class="container">
+        <!-- Header -->
+        <div class="search-header">
+            <h2>
+                <i class="bi bi-search me-2"></i>Kết quả tìm kiếm
+            </h2>
+            <p>
+                Tìm thấy <strong>@(Model.Events.Count + Model.Organizations.Count)</strong> kết quả cho
+                <span class="search-keyword">"@Model.Keyword"</span>
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Events Section -->
+            <div class="col-lg-6">
+                <div class="section-header events">
+                    <i class="bi bi-calendar-event-fill"></i>
+                    <h4>Sự kiện tình nguyện</h4>
+                    <span class="count-badge">@Model.Events.Count</span>
+                </div>
+
+                <div class="row g-3">
+                    @if (Model.Events.Any())
+                    {
+                        @foreach (var e in Model.Events)
+                        {
+                            <div class="col-12">
+                                <div class="result-card event">
+                                    <div class="image-wrapper">
+                                        <img src="@(string.IsNullOrEmpty(e.Images) ? "/images/default-event.jpg" : e.Images)"
+                                             class="result-image"
+                                             alt="@e.Title"
+                                             onerror="this.src='/images/default-event.jpg';" />
+                                        <div class="image-overlay event">
+                                            <i class="bi bi-calendar-check me-1"></i>Sự kiện
+                                        </div>
+                                    </div>
+                                    <div class="result-body">
+                                        <h5 class="result-title event">@e.Title</h5>
+
+                                        <div class="result-info">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                            <span>@e.Location</span>
+                                        </div>
+
+                                        <div class="result-info">
+                                            <i class="bi bi-clock-fill"></i>
+                                            <span>@e.StartTime.ToString("dd/MM/yyyy HH:mm")</span>
+                                        </div>
+
+                                        @if (!string.IsNullOrEmpty(e.Category?.Name))
+                                        {
+                                            <div>
+                                                <span class="result-badge category">
+                                                    <i class="bi bi-tag-fill"></i>
+                                                    @e.Category.Name
+                                                </span>
+                                            </div>
+                                        }
+
+                                        <div class="result-footer">
+                                            <a asp-controller="Event"
+                                               asp-action="Details"
+                                               asp-route-id="@e.Id"
+                                               class="btn-view-detail event float-end">
+                                                Xem chi tiết
+                                                <i class="bi bi-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12">
+                            <div class="empty-state">
+                                <i class="bi bi-calendar-x"></i>
+                                <p>Không tìm thấy sự kiện nào phù hợp với "<strong>@Model.Keyword</strong>"</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Organizations Section -->
+            <div class="col-lg-6">
+                <div class="section-header organizations">
+                    <i class="bi bi-building-fill"></i>
+                    <h4>Tổ chức</h4>
+                    <span class="count-badge">@Model.Organizations.Count</span>
+                </div>
+
+                <div class="row g-3">
+                    @if (Model.Organizations.Any())
+                    {
+                        @foreach (var org in Model.Organizations)
+                        {
+                            <div class="col-12">
+                                <div class="result-card org">
+                                    <div class="image-wrapper">
+                                        <img src="@(string.IsNullOrEmpty(org.AvatarUrl) ? "/images/default-org.png" : org.AvatarUrl)"
+                                             class="result-image"
+                                             alt="@org.Name"
+                                             onerror="this.src='/images/default-org.png';" />
+                                        <div class="image-overlay org">
+                                            <i class="bi bi-building me-1"></i>Tổ chức
+                                        </div>
+                                    </div>
+                                    <div class="result-body">
+                                        <h5 class="result-title org">@org.Name</h5>
+
+                                        @if (org.Verified)
+                                        {
+                                            <div>
+                                                <span class="result-badge verified">
+                                                    <i class="bi bi-patch-check-fill"></i>
+                                                    Đã xác thực
+                                                </span>
+                                            </div>
+                                        }
+
+                                        <div class="result-info org">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                            <span>@org.Address</span>
+                                        </div>
+
+                                        @if (!string.IsNullOrEmpty(org.ContactEmail))
+                                        {
+                                            <div class="result-info org">
+                                                <i class="bi bi-envelope-fill"></i>
+                                                <span>@org.ContactEmail</span>
+                                            </div>
+                                        }
+
+                                        <div class="result-footer">
+                                            <a asp-controller="Organization"
+                                               asp-action="Details"
+                                               asp-route-id="@org.Id"
+                                               class="btn-view-detail org float-end">
+                                                Xem hồ sơ
+                                                <i class="bi bi-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12">
+                            <div class="empty-state">
+                                <i class="bi bi-building-x"></i>
+                                <p>Không tìm thấy tổ chức nào phù hợp với "<strong>@Model.Keyword</strong>"</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="back-section">
+            <a asp-controller="Home" asp-action="Index" class="btn-back">
+                <i class="bi bi-arrow-left"></i>
+                Quay về trang chủ
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Smooth scroll animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.result-card');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 100);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+}

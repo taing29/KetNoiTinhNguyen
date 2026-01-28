@@ -1,0 +1,269 @@
+﻿@model TinhNguyenXanh.Models.EventRegistration
+@{
+    ViewData["Title"] = "Chi tiết tình nguyện viên";
+    Layout = "~/Areas/Organizer/Views/Shared/_OrganizationLayout.cshtml";
+
+    var status = Model.Status ?? "Pending";
+    var statusClass = status switch
+    {
+        "Confirmed" => "badge-success",
+        "Rejected" => "badge-danger",
+        _ => "badge-warning"
+    };
+    var statusIcon = status switch
+    {
+        "Confirmed" => "bi-check-circle-fill",
+        "Rejected" => "bi-x-circle-fill",
+        _ => "bi-hourglass-split"
+    };
+
+    var fullName = string.IsNullOrWhiteSpace(Model.FullName) ? (Model.Volunteer?.FullName ?? "Tình nguyện viên") : Model.FullName;
+    var email = Model.Volunteer?.User?.Email ?? "Không có";
+    var phone = Model.Phone ?? "Không có";
+    var avatar = Model.Volunteer?.AvatarUrl ?? "/images/default-avatar.png";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+
+<style>
+    :root {
+        --primary: #16a34a;
+        --primary-dark: #15803d;
+        --muted: #64748b;
+        --border: #e5e7eb;
+        --bg: #ffffff;
+        --accent: #f0fdf4;
+    }
+
+    .page-wrap {
+        padding: 2rem 0;
+    }
+
+    .header-card {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.25rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        position: relative;
+    }
+
+        .header-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), #10b981);
+            border-radius: 16px 16px 0 0;
+        }
+
+    .profile {
+        display: flex;
+        gap: 1.25rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .avatar-xl {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        border: 4px solid var(--accent);
+    }
+
+    .name {
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: #111827;
+        margin-bottom: .25rem;
+    }
+
+    .sub {
+        color: var(--muted);
+    }
+
+    .badge-status {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .5rem .9rem;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: .9rem;
+        border: 1px solid var(--border);
+        background: #fff;
+    }
+
+    .badge-success {
+        background: #dcfce7;
+        color: #166534;
+        border-color: #86efac;
+    }
+
+    .badge-warning {
+        background: #fef3c7;
+        color: #92400e;
+        border-color: #fde68a;
+    }
+
+    .badge-danger {
+        background: #fee2e2;
+        color: #991b1b;
+        border-color: #fca5a5;
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .4rem .7rem;
+        border-radius: 999px;
+        font-weight: 600;
+        background: var(--accent);
+        color: #065f46;
+        border: 1px solid #bbf7d0;
+    }
+
+    .card {
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+
+    .card-title {
+        font-weight: 700;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+        border-bottom: 3px solid var(--accent);
+        padding-bottom: .5rem;
+        margin-bottom: 1rem;
+    }
+
+    .btn-approve {
+        background: var(--primary);
+        color: #fff;
+    }
+
+        .btn-approve:hover {
+            background: var(--primary-dark);
+        }
+
+    .btn-reject {
+        background: #ef4444;
+        color: #fff;
+    }
+
+        .btn-reject:hover {
+            background: #dc2626;
+        }
+
+    .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 1rem 0;
+    }
+</style>
+
+<div class="page-wrap container">
+    <!-- Header -->
+    <div class="header-card">
+        <div class="d-flex justify-content-between align-items-start flex-wrap">
+            <div class="profile">
+                <img src="@avatar" class="avatar-xl" alt="avatar" />
+                <div>
+                    <div class="name">@fullName</div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="chip"><i class="bi bi-envelope"></i> @email</span>
+                        <span class="chip"><i class="bi bi-telephone"></i> @phone</span>
+                        <span class="chip"><i class="bi bi-calendar"></i> @Model.RegisteredDate.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                    <div class="mt-3">
+                        <span class="badge-status @statusClass">
+                            <i class="bi @statusIcon"></i>
+                            @status
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column align-items-end gap-2">
+                <a asp-action="ListVolunteer" asp-route-id="@Model.EventId" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Quay lại danh sách
+                </a>
+
+                <!-- Quick actions (ẩn nếu không ở trạng thái Pending) -->
+                @if (status == "Pending")
+                {
+                    <div class="d-flex gap-2">
+                        <form asp-area="Organizer" asp-controller="Volunteers" asp-action="Approve" method="post">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button type="submit" class="btn btn-approve">
+                                <i class="bi bi-check-circle"></i> Duyệt
+                            </button>
+                        </form>
+                        <form asp-area="Organizer" asp-controller="Volunteers" asp-action="Reject" method="post">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button type="submit" class="btn btn-reject">
+                                <i class="bi bi-x-circle"></i> Từ chối
+                            </button>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card p-4">
+                <h6 class="card-title"><i class="bi bi-quote"></i> Lý do tham gia</h6>
+                <p class="mb-0">@((string.IsNullOrWhiteSpace(Model.Reason) ? "Không có" : Model.Reason))</p>
+                <div class="divider"></div>
+
+                <h6 class="card-title"><i class="bi bi-person-lines-fill"></i> Thông tin bổ sung</h6>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="fw-semibold text-muted">Địa chỉ</div>
+                        <div>@(Model.Volunteer?.Address ?? "Không có")</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="fw-semibold text-muted">Kỹ năng</div>
+                        <div>@(Model.Volunteer?.Skills ?? "Không có")</div>
+                    </div>
+                    <div class="col-12">
+                        <div class="fw-semibold text-muted">Giới thiệu bản thân</div>
+                        <div>@(Model.Volunteer?.Bio ?? "Không có")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="card p-4">
+                <h6 class="card-title"><i class="bi bi-info-circle"></i> Thông tin đăng ký</h6>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><i class="bi bi-person-check me-2 text-success"></i> <strong>Họ tên:</strong> @fullName</li>
+                    <li class="mb-2"><i class="bi bi-telephone me-2 text-success"></i> <strong>Điện thoại:</strong> @phone</li>
+                    <li class="mb-2"><i class="bi bi-envelope me-2 text-success"></i> <strong>Email:</strong> @email</li>
+                    <li class="mb-2"><i class="bi bi-calendar2 me-2 text-success"></i> <strong>Ngày đăng ký:</strong> @Model.RegisteredDate.ToString("dd/MM/yyyy HH:mm")</li>
+                    <li class="mb-2"><i class="bi bi-activity me-2 text-success"></i> <strong>Trạng thái:</strong> @status</li>
+                </ul>
+            </div>
+
+            <div class="card p-4 mt-4">
+                <h6 class="card-title"><i class="bi bi-card-image"></i> Ảnh đại diện</h6>
+                <img src="@avatar" alt="avatar preview" class="rounded shadow-sm" style="width:100%; max-height:260px; object-fit:cover;" />
+                <div class="text-muted small mt-2">Ảnh lấy từ hồ sơ tình nguyện viên.</div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,483 @@
+﻿<!-- ==================== EDIT PAGE ==================== -->
+@model TinhNguyenXanh.DTOs.EventDTO
+@{
+    ViewData["Title"] = "Chỉnh sửa sự kiện";
+    Layout = "~/Areas/Organizer/Views/Shared/_OrganizationLayout.cshtml";
+}
+
+<style>
+    /* Shared styles cho cả Edit và Details */
+    .page-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #d1fae5;
+    }
+
+        .page-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.75rem;
+        }
+
+    .page-header-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-back {
+        background: white;
+        border: 2px solid #e5e7eb;
+        color: #6b7280;
+        padding: 0.625rem 1.25rem;
+        border-radius: 10px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+        .btn-back:hover {
+            background: #f9fafb;
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.9375rem;
+    }
+
+        .form-label i {
+            color: #10b981;
+            font-size: 1rem;
+        }
+
+    .form-control,
+    .form-select {
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            outline: none;
+        }
+
+    /* Image Preview */
+    .current-image-section {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .current-image-label {
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .current-image-label i {
+            color: #10b981;
+        }
+
+    .current-image {
+        max-width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .no-image {
+        text-align: center;
+        padding: 2rem;
+        color: #6b7280;
+        background: white;
+        border: 2px dashed #e5e7eb;
+        border-radius: 12px;
+    }
+
+        .no-image i {
+            font-size: 3rem;
+            color: #d1d5db;
+            margin-bottom: 0.5rem;
+        }
+
+    .image-upload-section {
+        background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        border: 2px dashed #d1fae5;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+        .image-upload-section:hover {
+            border-color: #10b981;
+        }
+
+    .image-preview-container {
+        position: relative;
+        margin-top: 1rem;
+    }
+
+    .new-image-preview {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        display: none;
+    }
+
+        .new-image-preview.show {
+            display: block;
+        }
+
+    .remove-image {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+
+        .remove-image.show {
+            display: flex;
+        }
+
+        .remove-image:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+    /* Sidebar Actions */
+    .sidebar-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #e5e7eb;
+        padding: 1.5rem;
+        position: sticky;
+        top: 1rem;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: none;
+        color: white;
+        padding: 0.875rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 1rem;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        margin-bottom: 0.75rem;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: white;
+        border: 2px solid #e5e7eb;
+        color: #6b7280;
+        padding: 0.875rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+        .btn-secondary-custom:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: #374151;
+        }
+
+    .text-danger {
+        color: #ef4444;
+        font-size: 0.8125rem;
+        margin-top: 0.375rem;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem;
+        }
+
+            .page-header h2 {
+                font-size: 1.25rem;
+            }
+
+        .page-header-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.25rem;
+        }
+
+        .sidebar-card {
+            position: static;
+            margin-top: 1.5rem;
+        }
+    }
+</style>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <h2>
+            <span class="page-header-icon">
+                <i class="bi bi-pencil-square"></i>
+            </span>
+            Chỉnh sửa sự kiện
+        </h2>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn-back">
+            <i class="bi bi-arrow-left"></i>
+            <span>Quay lại</span>
+        </a>
+    </div>
+</div>
+
+<!-- FORM -->
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="OrganizationId" />
+
+    <div class="row g-4">
+        <!-- MAIN CONTENT -->
+        <div class="col-lg-8">
+            <div class="form-card">
+                <div class="p-4">
+                    <div class="row g-3">
+                        <!-- Tên sự kiện -->
+                        <div class="col-12">
+                            <label asp-for="Title" class="form-label">
+                                <i class="bi bi-card-heading"></i>
+                                Tên sự kiện
+                            </label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <!-- Mô tả -->
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label">
+                                <i class="bi bi-text-paragraph"></i>
+                                Mô tả
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <!-- Thời gian -->
+                        <div class="col-md-6">
+                            <label asp-for="StartTime" class="form-label">
+                                <i class="bi bi-calendar-check"></i>
+                                Thời gian bắt đầu
+                            </label>
+                            <input asp-for="StartTime" type="datetime-local" class="form-control" />
+                            <span asp-validation-for="StartTime" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="EndTime" class="form-label">
+                                <i class="bi bi-calendar-x"></i>
+                                Thời gian kết thúc
+                            </label>
+                            <input asp-for="EndTime" type="datetime-local" class="form-control" />
+                            <span asp-validation-for="EndTime" class="text-danger"></span>
+                        </div>
+
+                        <!-- Địa điểm -->
+                        <div class="col-md-8">
+                            <label asp-for="Location" class="form-label">
+                                <i class="bi bi-geo-alt"></i>
+                                Địa điểm
+                            </label>
+                            <input asp-for="Location" class="form-control" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="LocationCoords" class="form-label">
+                                <i class="bi bi-pin-map"></i>
+                                Tọa độ
+                            </label>
+                            <input asp-for="LocationCoords" class="form-control" placeholder="10.762622,106.660172" />
+                            <span asp-validation-for="LocationCoords" class="text-danger"></span>
+                        </div>
+
+                        <!-- Danh mục & Số lượng -->
+                        <div class="col-md-6">
+                            <label asp-for="CategoryId" class="form-label">
+                                <i class="bi bi-tag"></i>
+                                Danh mục
+                            </label>
+                            <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories"></select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="MaxVolunteers" class="form-label">
+                                <i class="bi bi-people"></i>
+                                Số lượng tối đa
+                            </label>
+                            <input asp-for="MaxVolunteers" type="number" class="form-control" min="1" />
+                            <span asp-validation-for="MaxVolunteers" class="text-danger"></span>
+                        </div>
+
+                        <!-- Hình ảnh -->
+                        <div class="col-12">
+                            <div class="current-image-section">
+                                <div class="current-image-label">
+                                    <i class="bi bi-image"></i>
+                                    Hình ảnh hiện tại
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.Images))
+                                {
+                                    <img src="@Model.Images" alt="Current" class="current-image" />
+                                }
+                                else
+                                {
+                                    <div class="no-image">
+                                        <i class="bi bi-image"></i>
+                                        <p class="mb-0">Chưa có hình ảnh</p>
+                                    </div>
+                                }
+                            </div>
+
+                            <label class="form-label">
+                                <i class="bi bi-cloud-upload"></i>
+                                Thay ảnh mới
+                            </label>
+                            <div class="image-upload-section">
+                                <p class="mb-2"><strong>Tải lên ảnh mới</strong></p>
+                                <p class="text-muted small mb-2">JPG, PNG, GIF - Tối đa 5MB</p>
+                                <input asp-for="ImageFile" type="file" id="imageInput" class="form-control" accept="image/*" />
+                            </div>
+                            <div class="image-preview-container">
+                                <img id="newImagePreview" class="new-image-preview" alt="New Preview" />
+                                <button type="button" id="removeNewImage" class="remove-image">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="col-lg-4">
+            <div class="sidebar-card">
+                <button type="submit" class="btn-primary-custom">
+                    <i class="bi bi-check-circle"></i>
+                    Cập nhật sự kiện
+                </button>
+                <a asp-action="Index" class="btn-secondary-custom">
+                    <i class="bi bi-x-circle"></i>
+                    Hủy thay đổi
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageInput = document.getElementById('imageInput');
+            const newImagePreview = document.getElementById('newImagePreview');
+            const removeBtn = document.getElementById('removeNewImage');
+
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('Kích thước file không được vượt quá 5MB!');
+                        imageInput.value = '';
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        newImagePreview.src = e.target.result;
+                        newImagePreview.classList.add('show');
+                        removeBtn.classList.add('show');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            removeBtn.addEventListener('click', function() {
+                imageInput.value = '';
+                newImagePreview.src = '';
+                newImagePreview.classList.remove('show');
+                removeBtn.classList.remove('show');
+            });
+        });
+    </script>
+}

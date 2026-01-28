@@ -1,0 +1,432 @@
+﻿@model IEnumerable<TinhNguyenXanh.Models.EventRegistration>
+@{
+    ViewData["Title"] = "Lịch sử hoạt động";
+    Layout = "~/Areas/Organizer/Views/Shared/_OrganizationLayout.cshtml";
+    var volunteer = ViewBag.VolunteerInfo as TinhNguyenXanh.Models.Volunteer;
+}
+
+<style>
+    .volunteer-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+    }
+
+    .profile-card {
+        background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        border-radius: 1.5rem;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 20px 40px rgba(5, 150, 105, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+    .profile-content {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .avatar-wrapper {
+        position: relative;
+    }
+
+    .avatar-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-info {
+        flex: 1;
+        color: white;
+    }
+
+    .profile-name {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-contact {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.95;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        padding: 1.25rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    .history-card {
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    .history-header {
+        padding: 2rem 2.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        background: linear-gradient(to right, #f0fdf4, #ffffff);
+    }
+
+    .history-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #059669;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 0;
+    }
+
+    .event-list {
+        padding: 1rem;
+    }
+
+    .event-item {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .event-item:hover {
+            border-color: #10b981;
+            box-shadow: 0 8px 24px rgba(5, 150, 105, 0.1);
+            transform: translateY(-2px);
+        }
+
+    .event-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .event-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #059669;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .event-date {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1.25rem;
+        border-radius: 2rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .status-confirmed {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .event-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #f3f4f6;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .detail-label {
+        font-size: 0.8rem;
+        color: #9ca3af;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+    }
+
+    .detail-value {
+        color: #374151;
+        font-size: 0.95rem;
+    }
+
+    .reason-text {
+        background: #f9fafb;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        color: #4b5563;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        border-left: 3px solid #10b981;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #9ca3af;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .footer-actions {
+        padding: 1.5rem 2.5rem;
+        border-top: 1px solid #e5e7eb;
+        background: #f9fafb;
+    }
+
+    .btn-back {
+        padding: 0.75rem 1.5rem;
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 0.75rem;
+        color: #374151;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-back:hover {
+            background: #f9fafb;
+            border-color: #10b981;
+            color: #059669;
+        }
+
+    @@media (max-width: 768px) {
+        .volunteer-container
+
+    {
+        padding: 1rem;
+    }
+
+    .profile-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-contact {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .event-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .profile-name {
+        font-size: 1.5rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    }
+</style>
+
+<div class="volunteer-container">
+    <!-- Profile Card -->
+    <div class="profile-card">
+        <div class="profile-content">
+            <div class="avatar-wrapper">
+                <img src="@(volunteer?.AvatarUrl ?? "/images/default-avatar.png")"
+                     class="avatar-image" alt="@volunteer?.FullName">
+            </div>
+            <div class="profile-info">
+                <h1 class="profile-name">@volunteer?.FullName</h1>
+                <div class="profile-contact">
+                    <div class="contact-item">
+                        <i class="bi bi-envelope-fill"></i>
+                        <span>@(volunteer?.Email ?? "Chưa cập nhật")</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-telephone-fill"></i>
+                        <span>@(volunteer?.Phone ?? "Chưa cập nhật")</span>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-value">@Model.Count()</span>
+                        <span class="stat-label">Tổng sự kiện tham gia</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value">@Model.Count(x => x.Status == "Confirmed")</span>
+                        <span class="stat-label">Sự kiện đã duyệt</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value">@Model.Count(x => x.Status == "Pending")</span>
+                        <span class="stat-label">Đang chờ duyệt</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Card -->
+    <div class="history-card">
+        <div class="history-header">
+            <h2 class="history-title">
+                <i class="bi bi-clock-history"></i>
+                Lịch sử tham gia sự kiện
+            </h2>
+        </div>
+
+        <div class="event-list">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <div class="event-item">
+                        <div class="event-header">
+                            <div style="flex: 1;">
+                                <h3 class="event-title">@item.Event?.Title</h3>
+                                <div class="event-date">
+                                    <i class="bi bi-calendar-event"></i>
+                                    <span>Diễn ra: @item.Event?.StartTime.ToString("dd/MM/yyyy HH:mm")</span>
+                                </div>
+                            </div>
+                            <div>
+                                @if (item.Status == "Confirmed")
+                                {
+                                    <span class="status-badge status-confirmed">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Đã duyệt
+                                    </span>
+                                }
+                                else if (item.Status == "Pending")
+                                {
+                                    <span class="status-badge status-pending">
+                                        <i class="bi bi-clock-fill me-1"></i> Chờ duyệt
+                                    </span>
+                                }
+                                else if (item.Status == "Rejected")
+                                {
+                                    <span class="status-badge status-rejected">
+                                        <i class="bi bi-x-circle-fill me-1"></i> Từ chối
+                                    </span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="event-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Ngày đăng ký</span>
+                                <span class="detail-value">
+                                    <i class="bi bi-calendar-check me-1"></i>
+                                    @item.RegisteredDate.ToString("dd/MM/yyyy HH:mm")
+                                </span>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(item.Reason))
+                            {
+                                <div class="detail-item" style="grid-column: 1 / -1;">
+                                    <span class="detail-label">Lý do tham gia</span>
+                                    <div class="reason-text">@item.Reason</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="bi bi-inbox"></i>
+                    </div>
+                    <h3 style="color: #6b7280; font-weight: 600; margin-bottom: 0.5rem;">
+                        Chưa có lịch sử tham gia
+                    </h3>
+                    <p style="color: #9ca3af; margin: 0;">
+                        Tình nguyện viên chưa đăng ký sự kiện nào tại tổ chức của bạn.
+                    </p>
+                </div>
+            }
+        </div>
+
+        <div class="footer-actions">
+            <button onclick="history.back()" class="btn-back">
+                <i class="bi bi-arrow-left"></i>
+                Quay lại
+            </button>
+        </div>
+    </div>
+</div>

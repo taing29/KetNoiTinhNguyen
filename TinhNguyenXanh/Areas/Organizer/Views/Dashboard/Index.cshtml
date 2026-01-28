@@ -1,0 +1,137 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="content-header">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+    </nav>
+    <h1>Dashboard Tổ chức</h1>
+</div>
+
+<div class="row g-4">
+    <!-- Thống kê -->
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="text-muted mb-0">Sự kiện</h6>
+                    <i class="bi bi-calendar-event fs-4 text-primary"></i>
+                </div>
+                <h2 class="mb-0">12</h2>
+                <small class="text-success">+2 tháng này</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="text-muted mb-0">Tình nguyện viên</h6>
+                    <i class="bi bi-people fs-4 text-success"></i>
+                </div>
+                <h2 class="mb-0">245</h2>
+                <small class="text-success">+18 tuần này</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="text-muted mb-0">Đăng ký chờ</h6>
+                    <i class="bi bi-clock-history fs-4 text-warning"></i>
+                </div>
+                <h2 class="mb-0">8</h2>
+                <small class="text-muted">Cần xác nhận</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="text-muted mb-0">Đánh giá</h6>
+                    <i class="bi bi-star fs-4 text-info"></i>
+                </div>
+                <h2 class="mb-0">4.8</h2>
+                <small class="text-muted">Trung bình</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Sự kiện sắp diễn ra</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Tên sự kiện</th>
+                                <th>Ngày</th>
+                                <th>Đăng ký</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Dọn rác bãi biển Vũng Tàu</td>
+                                <td>15/11/2025</td>
+                                <td>45/60</td>
+                                <td><span class="badge bg-success">Đang mở</span></td>
+                            </tr>
+                            <tr>
+                                <td>Trồng cây xanh Quận 7</td>
+                                <td>20/11/2025</td>
+                                <td>30/50</td>
+                                <td><span class="badge bg-success">Đang mở</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Hoạt động gần đây</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-start mb-3">
+                    <div class="flex-shrink-0">
+                        <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center">
+                            <i class="bi bi-person-plus"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <p class="mb-0"><strong>5 tình nguyện viên</strong> đăng ký</p>
+                        <small class="text-muted">2 giờ trước</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start mb-3">
+                    <div class="flex-shrink-0">
+                        <div class="avatar-sm bg-success text-white rounded-circle d-flex align-items-center justify-content-center">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <p class="mb-0">Sự kiện <strong>"Dọn rác bãi biển"</strong> được duyệt</p>
+                        <small class="text-muted">5 giờ trước</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

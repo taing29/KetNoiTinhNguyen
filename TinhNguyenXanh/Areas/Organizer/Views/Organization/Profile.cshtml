@@ -1,0 +1,847 @@
+﻿@model TinhNguyenXanh.DTOs.OrganizationDTO
+@{
+    ViewData["Title"] = "Hồ sơ tổ chức";
+    var focusAreas = Model.FocusAreas ?? new List<string>();
+    var rating = Model.AverageRating ?? 0m;
+    var reviews = Model.TotalReviews ?? 0;
+}
+
+<div class="container-fluid">
+    <div class="row g-4">
+        <!-- CỘT TRÁI: AVATAR + TỔNG QUAN -->
+        <div class="col-lg-4">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <!-- AVATAR -->
+                    @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+                    {
+                        <div class="avatar-wrapper">
+                            <img src="@Url.Content(Model.AvatarUrl)"
+                                 alt="Logo tổ chức"
+                                 class="profile-avatar" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="avatar-wrapper">
+                            <div class="profile-avatar-placeholder">
+                                <i class="bi bi-building"></i>
+                            </div>
+                        </div>
+                    }
+
+                    @functions {
+                        private string GetOrganizationTypeDisplay(string? type)
+                        {
+                            return type switch
+                            {
+                                "NGO" => "NGO/Phi lợi nhuận",
+                                "Volunteer" => "Nhóm tình nguyện",
+                                "Social" => "Doanh nghiệp xã hội",
+                                "School" => "Trường học/Đại học",
+                                "Government" => "Cơ quan nhà nước",
+                                "Other" => "Khác",
+                                _ => "Chưa xác định"
+                            };
+                        }
+                    }
+
+                    <!-- TÊN + LOẠI -->
+                    <h3 class="profile-name">@Model.Name</h3>
+                    <p class="profile-type">@GetOrganizationTypeDisplay(Model.OrganizationType)</p>
+
+                    <!-- VERIFIED BADGE -->
+                    @if (Model.Verified == true)
+                    {
+                        <span class="status-badge verified">
+                            <i class="bi bi-patch-check-fill"></i> Đã xác minh
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="status-badge pending">
+                            <i class="bi bi-patch-exclamation-fill"></i> Chưa xác minh
+                        </span>
+                    }
+
+                    <!-- RATING 5 SAO -->
+                    <div class="rating-section">
+                        <div class="stars">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= rating)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                                else if (i - 0.5m <= rating)
+                                {
+                                    <i class="bi bi-star-half"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-star"></i>
+                                }
+                            }
+                        </div>
+                        <span class="rating-text">@rating.ToString("0.0") (@reviews đánh giá)</span>
+                    </div>
+                </div>
+
+                <!-- NÚT CHỈNH SỬA -->
+                <div class="profile-actions">
+                    <a asp-action="Edit" class="btn-edit">
+                        <i class="bi bi-pencil-square"></i>
+                        <span>Chỉnh sửa hồ sơ</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI: NỘI DUNG CHI TIẾT -->
+        <div class="col-lg-8">
+            <!-- 1. GIỚI THIỆU -->
+            <div class="info-card">
+                <div class="card-header-custom">
+                    <div class="header-icon">
+                        <i class="bi bi-card-text"></i>
+                    </div>
+                    <h5>Giới thiệu tổ chức</h5>
+                </div>
+                <div class="card-body-custom">
+                    <p class="description-text">
+                        @if (string.IsNullOrEmpty(Model.Description))
+                        {
+                            <em class="text-muted">Chưa có mô tả tổ chức.</em>
+                        }
+                        else
+                        {
+                            @Model.Description
+                        }
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2. LĨNH VỰC HOẠT ĐỘNG -->
+            <div class="info-card">
+                <div class="card-header-custom">
+                    <div class="header-icon">
+                        <i class="bi bi-tags"></i>
+                    </div>
+                    <h5>Lĩnh vực hoạt động</h5>
+                </div>
+                <div class="card-body-custom">
+                    @if (focusAreas.Any())
+                    {
+                        <div class="focus-areas">
+                            @foreach (var area in focusAreas)
+                            {
+                                <span class="focus-tag">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    @area
+                                </span>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">Chưa chọn lĩnh vực hoạt động.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- 3. THỐNG KÊ -->
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="stat-card-custom members">
+                        <div class="stat-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>@(Model.MemberCount ?? 0)</h3>
+                            <p>Thành viên</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="stat-card-custom events">
+                        <div class="stat-icon">
+                            <i class="bi bi-calendar-event"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>@(Model.EventsOrganized ?? 0)</h3>
+                            <p>Sự kiện đã tổ chức</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. THÀNH TÍCH NỔI BẬT -->
+            @if (!string.IsNullOrEmpty(Model.Achievements))
+            {
+                <div class="info-card">
+                    <div class="card-header-custom">
+                        <div class="header-icon achievement">
+                            <i class="bi bi-trophy"></i>
+                        </div>
+                        <h5>Thành tích nổi bật</h5>
+                    </div>
+                    <div class="card-body-custom">
+                        <ul class="achievement-list">
+                            @foreach (var line in Model.Achievements.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                <li>
+                                    <i class="bi bi-award-fill"></i>
+                                    <span>@line.Trim()</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+
+            <!-- 5. THÔNG TIN LIÊN HỆ -->
+            <div class="info-card">
+                <div class="card-header-custom">
+                    <div class="header-icon contact">
+                        <i class="bi bi-telephone-inbound"></i>
+                    </div>
+                    <h5>Thông tin liên hệ</h5>
+                </div>
+                <div class="card-body-custom">
+                    <div class="contact-grid">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="bi bi-envelope-fill"></i>
+                            </div>
+                            <div class="contact-info">
+                                <label>Email</label>
+                                <a href="mailto:@Model.ContactEmail">@Model.ContactEmail</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="bi bi-phone-fill"></i>
+                            </div>
+                            <div class="contact-info">
+                                <label>Điện thoại</label>
+                                <span>@Model.PhoneNumber</span>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.Website))
+                        {
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="bi bi-globe"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <label>Website</label>
+                                    <a href="@Model.Website" target="_blank">@Model.Website</a>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="contact-item full-width">
+                            <div class="contact-icon">
+                                <i class="bi bi-geo-alt-fill"></i>
+                            </div>
+                            <div class="contact-info">
+                                <label>Địa chỉ</label>
+                                <span>
+                                    @Model.Address
+                                    @if (!string.IsNullOrEmpty(Model.Ward))
+                                    {
+                                        <text>, @Model.Ward</text>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.District))
+                                    {
+                                        <text>, @Model.District</text>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.City))
+                                    {
+                                        <text>, @Model.City</text>
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. MẠNG XÃ HỘI -->
+            @if (!string.IsNullOrEmpty(Model.FacebookUrl) || !string.IsNullOrEmpty(Model.InstagramUrl) || !string.IsNullOrEmpty(Model.ZaloNumber))
+            {
+                <div class="social-links">
+                    @if (!string.IsNullOrEmpty(Model.FacebookUrl))
+                    {
+                        <a href="@Model.FacebookUrl" target="_blank" class="social-btn facebook">
+                            <i class="bi bi-facebook"></i>
+                            <span>Facebook</span>
+                        </a>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.InstagramUrl))
+                    {
+                        <a href="@Model.InstagramUrl" target="_blank" class="social-btn instagram">
+                            <i class="bi bi-instagram"></i>
+                            <span>Instagram</span>
+                        </a>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.ZaloNumber))
+                    {
+                        <a href="https://zalo.me/@Model.ZaloNumber" target="_blank" class="social-btn zalo">
+                            <i class="bi bi-chat-dots"></i>
+                            <span>Zalo</span>
+                        </a>
+                    }
+                </div>
+            }
+
+            <!-- 7. TÀI LIỆU XÁC MINH -->
+            @if (Model.Verified == true && !string.IsNullOrEmpty(Model.VerificationDocsUrl))
+            {
+                <div class="info-card">
+                    <div class="card-header-custom">
+                        <div class="header-icon verified">
+                            <i class="bi bi-file-earmark-check"></i>
+                        </div>
+                        <h5>Tài liệu xác minh</h5>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="doc-info">
+                            <p><strong>Loại tài liệu:</strong> @Model.DocumentType</p>
+                            @{
+                                var fileName = Model.VerificationDocsUrl.Split('/').Last();
+                            }
+                            <a href="@Model.VerificationDocsUrl" target="_blank" class="btn-view-doc">
+                                <i class="bi bi-file-earmark-arrow-down"></i>
+                                <span>Xem tài liệu (@fileName)</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        :root {
+            --primary-color: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f8fafc;
+            --border-color: #e5e7eb;
+        }
+
+        /* ==================== PROFILE CARD ==================== */
+        .profile-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            overflow: hidden;
+            position: sticky;
+            top: 1rem;
+        }
+
+        .profile-header {
+            padding: 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-light) 0%, #ecfdf5 100%);
+        }
+
+        .avatar-wrapper {
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+        }
+
+        .profile-avatar-placeholder {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+        }
+
+            .profile-avatar-placeholder i {
+                font-size: 3.5rem;
+                color: white;
+            }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .profile-type {
+            color: var(--text-light);
+            font-size: 0.9375rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+            .status-badge.verified {
+                background: var(--primary-color);
+                color: white;
+            }
+
+            .status-badge.pending {
+                background: #fbbf24;
+                color: #78350f;
+            }
+
+        .rating-section {
+            margin-top: 1rem;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 0.25rem;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+            .stars i {
+                color: #fbbf24;
+            }
+
+                .stars i.bi-star {
+                    color: #d1d5db;
+                }
+
+        .rating-text {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        .profile-actions {
+            padding: 1.5rem;
+        }
+
+        .btn-edit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+            .btn-edit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+                color: white;
+            }
+
+        /* ==================== INFO CARDS ==================== */
+        .info-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .info-card:hover {
+                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            }
+
+        .card-header-custom {
+            padding: 1.25rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-light) 0%, #ecfdf5 100%);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+            .header-icon.achievement {
+                background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            }
+
+            .header-icon.contact {
+                background: linear-gradient(135deg, #3b82f6, #2563eb);
+            }
+
+            .header-icon.verified {
+                background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            }
+
+        .card-header-custom h5 {
+            margin: 0;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .card-body-custom {
+            padding: 1.5rem;
+        }
+
+        .description-text {
+            font-size: 0.9375rem;
+            line-height: 1.7;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        /* ==================== FOCUS AREAS ==================== */
+        .focus-areas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .focus-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1rem;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 2px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+            .focus-tag:hover {
+                background: var(--primary-color);
+                color: white;
+                transform: translateY(-2px);
+            }
+
+            .focus-tag i {
+                font-size: 0.875rem;
+            }
+
+        /* ==================== STAT CARDS ==================== */
+        .stat-card-custom {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+            .stat-card-custom:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+            }
+
+            .stat-card-custom.members {
+                background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            }
+
+            .stat-card-custom.events {
+                background: linear-gradient(135deg, var(--primary-light) 0%, #d1fae5 100%);
+            }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .stat-card-custom.members .stat-icon {
+            color: #3b82f6;
+        }
+
+        .stat-card-custom.events .stat-icon {
+            color: var(--primary-color);
+        }
+
+        .stat-content h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0 0 0.25rem 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .stat-content p {
+            color: var(--text-light);
+            font-size: 0.9375rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* ==================== ACHIEVEMENTS ==================== */
+        .achievement-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+            .achievement-list li {
+                display: flex;
+                align-items: flex-start;
+                gap: 0.875rem;
+                padding: 0.875rem 0;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+                .achievement-list li:last-child {
+                    border-bottom: none;
+                }
+
+            .achievement-list i {
+                color: #fbbf24;
+                font-size: 1.25rem;
+                margin-top: 0.125rem;
+            }
+
+            .achievement-list span {
+                flex: 1;
+                color: var(--text-dark);
+                line-height: 1.6;
+            }
+
+        /* ==================== CONTACT GRID ==================== */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+            .contact-item:hover {
+                background: var(--primary-light);
+            }
+
+            .contact-item.full-width {
+                grid-column: 1 / -1;
+            }
+
+        .contact-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.125rem;
+            flex-shrink: 0;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+            .contact-info label {
+                display: block;
+                font-size: 0.75rem;
+                color: var(--text-light);
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                margin-bottom: 0.25rem;
+            }
+
+            .contact-info span,
+            .contact-info a {
+                color: var(--text-dark);
+                font-weight: 600;
+                font-size: 0.9375rem;
+            }
+
+            .contact-info a {
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+                .contact-info a:hover {
+                    color: var(--primary-color);
+                }
+
+        /* ==================== SOCIAL LINKS ==================== */
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid;
+        }
+
+            .social-btn.facebook {
+                background: white;
+                color: #1877f2;
+                border-color: #1877f2;
+            }
+
+                .social-btn.facebook:hover {
+                    background: #1877f2;
+                    color: white;
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 16px rgba(24, 119, 242, 0.3);
+                }
+
+            .social-btn.instagram {
+                background: white;
+                color: #e4405f;
+                border-color: #e4405f;
+            }
+
+                .social-btn.instagram:hover {
+                    background: linear-gradient(135deg, #e4405f, #c13584);
+                    color: white;
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 16px rgba(228, 64, 95, 0.3);
+                }
+
+            .social-btn.zalo {
+                background: white;
+                color: #0068ff;
+                border-color: #0068ff;
+            }
+
+                .social-btn.zalo:hover {
+                    background: #0068ff;
+                    color: white;
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 16px rgba(0, 104, 255, 0.3);
+                }
+
+        /* ==================== DOCUMENT SECTION ==================== */
+        .doc-info p {
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .btn-view-doc {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+            .btn-view-doc:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+                color: white;
+            }
+
+        /* ==================== RESPONSIVE ==================== */
+        @@media (max-width: 768px) {
+            .profile-card {
+                position: static;
+            }
+
+            .profile-avatar,
+            .profile-avatar-placeholder {
+                width: 120px;
+                height: 120px;
+            }
+
+                .profile-avatar-placeholder i {
+                    font-size: 3rem;
+                }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .social-links {
+                flex-direction: column;
+            }
+
+            .social-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+}

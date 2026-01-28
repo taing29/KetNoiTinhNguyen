@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Kết Nối Xanh</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .auth-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Cột trái (hình ảnh) */
+        .login-left {
+            flex: 1;
+            background: url('/images/volunteer-login.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        /* Cột phải (form đăng nhập) */
+        .login-right {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            background-color: #fff;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 20px;
+        }
+
+        .btn-login {
+            background-color: #7c3aed;
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+            .btn-login:hover {
+                background-color: #6d28d9;
+            }
+
+        /* Responsive cho màn hình nhỏ */
+        @@media (max-width: 768px) {
+            .auth-container
+
+        {
+            flex-direction: column;
+        }
+
+        .login-left {
+            display: none;
+        }
+
+        .login-right {
+            flex: none;
+            width: 100%;
+            padding: 20px;
+        }
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="login-left"></div>
+        <div class="login-right">
+            <div class="login-box">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,607 @@
+﻿@model IEnumerable<TinhNguyenXanh.DTOs.EventDTO>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Danh sách hoạt động tình nguyện";
+    var totalEvents = ViewBag.TotalCount ?? 0; // Sửa lại lấy từ ViewBag cho chính xác với phân trang
+    var news = ViewBag.News as IEnumerable<dynamic>;
+}
+
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+<style>
+    :root {
+        --primary-color: #16a34a;
+        --primary-hover: #15803d;
+        --accent-light: #f0fdf4;
+        --text-dark: #0f172a;
+        --text-muted: #64748b;
+        --border-color: #e5e7eb;
+        --bg-light: #ffffff;
+        --heart-color: #ef4444; /* Màu đỏ trái tim */
+    }
+
+    .event-list-container {
+        background: #ffffff;
+        min-height: 100vh;
+        padding: 3rem 0;
+    }
+
+    /* Filter Header */
+    .filter-header {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .filter-header h6 {
+            color: var(--text-dark);
+            font-size: 1.1rem;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .filter-header strong {
+            color: var(--primary-color);
+            font-size: 1.25rem;
+        }
+
+    .filter-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: var(--accent-light);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .filter-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+    /* Event Card Styles */
+    .event-card {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+        .event-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-color);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .event-card:hover::before {
+            transform: scaleY(1);
+        }
+
+    /* --- NÚT YÊU THÍCH (MỚI) --- */
+    .btn-favorite {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(4px);
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .btn-favorite:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+            border-color: var(--heart-color);
+        }
+
+        .btn-favorite i {
+            font-size: 1.3rem;
+            color: var(--text-muted); /* Mặc định xám */
+            transition: all 0.2s;
+        }
+
+            .btn-favorite i.bi-heart-fill {
+                color: var(--heart-color); /* Khi thích: Đỏ */
+                animation: heartPulse 0.4s ease-out;
+            }
+
+    @@keyframes heartPulse {
+        0%
+
+    {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.3);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+    }
+
+    .event-image-container {
+        overflow: hidden;
+        position: relative;
+        background: var(--accent-light);
+        height: 100%;
+    }
+
+    .event-image {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .event-card:hover .event-image {
+        transform: scale(1.05);
+    }
+
+    .event-content {
+        padding: 1.5rem;
+    }
+
+    .event-title {
+        color: var(--text-dark);
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .event-info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+    }
+
+        .event-info-item i {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            min-width: 20px;
+        }
+
+    .btn-register {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.625rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-register:hover {
+            background: var(--primary-hover);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+        }
+
+    /* News Section */
+    .news-section {
+        position: sticky;
+        top: 2rem;
+    }
+
+    .news-title {
+        color: var(--text-dark);
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 3px solid var(--primary-color);
+        display: inline-block;
+    }
+
+    .news-item {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        display: block;
+        color: inherit;
+    }
+
+        .news-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary-color);
+        }
+
+    .news-image {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+
+    .news-content p {
+        font-weight: 600;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        margin: 0 0 0.5rem 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .news-date {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+    }
+
+    /* Pagination Styles */
+    .pagination-container {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .pagination {
+        gap: 0.5rem;
+    }
+
+    .page-item .page-link {
+        border: 1px solid var(--border-color);
+        color: var(--text-dark);
+        padding: 0.5rem 0.875rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+        .page-item .page-link:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+    .page-item.active .page-link {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+    .page-item.disabled .page-link {
+        background: var(--accent-light);
+        border-color: var(--border-color);
+        color: var(--text-muted);
+        pointer-events: none;
+    }
+
+    /* Empty State */
+    .empty-state {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 3rem 2rem;
+        text-align: center;
+        color: var(--text-muted);
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+    @@media (max-width: 991px) {
+        .event-list-container
+
+    {
+        padding: 2rem 0;
+    }
+
+    .filter-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .news-section {
+        position: static;
+        margin-top: 3rem;
+    }
+
+    }
+</style>
+
+<div class="event-list-container">
+    <div class="container">
+        <div class="filter-header">
+            <h6>
+                <strong>@totalEvents</strong> cơ hội tình nguyện
+            </h6>
+            <div class="filter-btn">
+                <i class="bi bi-funnel"></i>
+                <span class="fw-semibold">Bộ lọc</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var e in Model)
+                    {
+                        <div class="event-card">
+                            <button class="btn-favorite"
+                                    onclick="toggleFavorite(this, @e.Id)"
+                                    title="@(e.IsFavorited ? "Bỏ yêu thích" : "Thêm vào yêu thích")">
+                                <i class="bi @(e.IsFavorited ? "bi-heart-fill" : "bi-heart")"></i>
+                            </button>
+
+                            <div class="row g-0">
+                                <div class="col-md-5">
+                                    <div class="event-image-container">
+                                        <img src="@(string.IsNullOrEmpty(e.Images) ? "/images/default.png" : e.Images)"
+                                             class="img-fluid rounded-start event-image"
+                                             alt="@e.Title"
+                                             onerror="this.src='/images/default.png';">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-7">
+                                    <div class="event-content">
+                                        <h5 class="event-title" title="@e.Title">@e.Title</h5>
+
+                                        <div class="event-info">
+                                            <div class="event-info-item">
+                                                <i class="bi bi-geo-alt-fill"></i>
+                                                <span class="text-truncate">@e.Location</span>
+                                            </div>
+                                            <div class="event-info-item">
+                                                <i class="bi bi-calendar-event-fill"></i>
+                                                <span>@e.StartTime.ToString("dd/MM/yyyy")</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-end mt-3">
+                                            <a href="@Url.Action("Details", "Event", new { id = e.Id })"
+                                               class="btn-register">
+                                                Xem chi tiết
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p class="mb-0">Hiện chưa có hoạt động tình nguyện nào phù hợp.</p>
+                    </div>
+                }
+
+                <div class="pagination-container">
+                    <nav>
+                        @{
+                            int currentPage = ViewBag.Page ?? 1;
+                            int pageSize = ViewBag.PageSize ?? 10;
+                            int totalCount = ViewBag.TotalCount ?? 0;
+                            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+                        }
+
+                        @if (totalPages > 1)
+                        {
+                            <ul class="pagination justify-content-center mb-0">
+                                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                                    <a class="page-link"
+                                       href="@(currentPage == 1 ? "#" : Url.Action("Index", "Event", new { page = currentPage - 1, keyword = ViewBag.Keyword, category = ViewBag.CategoryId, location = ViewBag.Location }))">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
+                                </li>
+
+                                @{
+                                    int startPage = Math.Max(1, currentPage - 2);
+                                    int endPage = Math.Min(totalPages, currentPage + 2);
+
+                                    // Luôn hiện trang 1
+                                    if (startPage > 1)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" href="@Url.Action("Index", new { page = 1, keyword = ViewBag.Keyword, category = ViewBag.CategoryId, location = ViewBag.Location })">1</a>
+                                        </li>
+                                        if (startPage > 2)
+                                        {
+                                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                                        }
+                                    }
+
+                                    // Các trang ở giữa
+                                    for (int i = startPage; i <= endPage; i++)
+                                    {
+                                        <li class="page-item @(i == currentPage ? "active" : "")">
+                                            <a class="page-link" href="@Url.Action("Index", new { page = i, keyword = ViewBag.Keyword, category = ViewBag.CategoryId, location = ViewBag.Location })">@i</a>
+                                        </li>
+                                    }
+
+                                    // Luôn hiện trang cuối
+                                    if (endPage < totalPages)
+                                    {
+                                        if (endPage < totalPages - 1)
+                                        {
+                                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                                        }
+                                        <li class="page-item">
+                                            <a class="page-link" href="@Url.Action("Index", new { page = totalPages, keyword = ViewBag.Keyword, category = ViewBag.CategoryId, location = ViewBag.Location })">@totalPages</a>
+                                        </li>
+                                    }
+                                }
+
+                                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                                    <a class="page-link"
+                                       href="@(currentPage == totalPages ? "#" : Url.Action("Index", "Event", new { page = currentPage + 1, keyword = ViewBag.Keyword, category = ViewBag.CategoryId, location = ViewBag.Location }))">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        }
+                    </nav>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="news-section">
+                    <h5 class="news-title">Tin tức nổi bật</h5>
+
+                    @if (news != null && news.Any())
+                    {
+                        foreach (var item in news)
+                        {
+                            <a href="@Url.Action("Details", "Event", new { id = item.Id })" class="news-item">
+                                <div class="d-flex gap-3 align-items-center">
+                                    <img src="@(string.IsNullOrEmpty((string)item.Images) ? "/images/default-event.png" : (string)item.Images)"
+                                         class="news-image"
+                                         alt="@item.Title"
+                                         onerror="this.src='/images/default-event.png';" />
+                                    <div class="news-content">
+                                        <p>@item.Title</p>
+                                        <small class="news-date">
+                                            <i class="bi bi-calendar me-1"></i>
+                                            @(((DateTime)item.StartTime).ToString("dd/MM/yyyy"))
+                                        </small>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-state py-4">
+                            <i class="bi bi-newspaper fs-2 mb-2"></i>
+                            <p class="mb-0 small">Chưa có tin tức mới.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function toggleFavorite(btn, eventId) {
+            const icon = btn.querySelector("i");
+
+            // Hiệu ứng click
+            btn.style.transform = "scale(0.9)";
+            setTimeout(() => btn.style.transform = "scale(1)", 150);
+
+            fetch(`/Event/ToggleFavorite?eventId=${eventId}`, {
+                method: 'POST'
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    Swal.fire({
+                        title: 'Bạn chưa đăng nhập!',
+                        text: "Vui lòng đăng nhập để lưu sự kiện yêu thích.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#16a34a',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Đăng nhập ngay',
+                        cancelButtonText: 'Hủy',
+                        customClass: { popup: 'rounded-4' }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/Identity/Account/Login?ReturnUrl=' + window.location.pathname;
+                        }
+                    });
+                    return null;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data) {
+                    if (data.status === 'added') {
+                        icon.classList.remove('bi-heart');
+                        icon.classList.add('bi-heart-fill');
+                        btn.title = "Bỏ yêu thích";
+
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Đã thêm vào yêu thích'
+                        })
+                    } else {
+                        icon.classList.remove('bi-heart-fill');
+                        icon.classList.add('bi-heart');
+                        btn.title = "Thêm vào yêu thích";
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+}

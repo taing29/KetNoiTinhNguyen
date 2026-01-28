@@ -1,0 +1,677 @@
+﻿@model TinhNguyenXanh.DTOs.OrganizationDTO
+@{
+    ViewData["Title"] = "Đăng ký Ban Tổ Chức";
+}
+
+<style>
+    .org-register-wrapper {
+        background: linear-gradient(135deg, #667eea 0%, #16a34a 100%);
+        min-height: 100vh;
+        padding: 60px 0;
+    }
+
+    .org-register-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        overflow: hidden;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .org-header {
+        background: linear-gradient(135deg, #16a34a 0%, #16a34a 100%);
+        color: white;
+        padding: 40px 30px;
+        text-align: center;
+    }
+
+        .org-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .org-header p {
+            opacity: 0.95;
+            font-size: 1rem;
+        }
+
+    .org-body {
+        padding: 40px 50px;
+    }
+
+    .section-title {
+        color: #667eea;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 30px 0 20px 0;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #667eea;
+    }
+
+        .section-title i {
+            margin-right: 10px;
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+        .form-label .text-danger {
+            color: #dc3545;
+        }
+
+    .form-control, .form-select {
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+    .btn-register {
+        background: linear-gradient(135deg, #16a34a 0%, #16a34a 100%);
+        border: none;
+        color: white;
+        padding: 14px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+    .focus-area-checkbox {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .focus-area-item {
+        flex: 0 0 calc(33.333% - 10px);
+    }
+
+        .focus-area-item label {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .focus-area-item input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+            .focus-area-item input[type="checkbox"]:checked + label,
+            .focus-area-item label:has(input[type="checkbox"]:checked) {
+                background: #f0f4ff;
+                border-color: #667eea;
+                color: #667eea;
+                font-weight: 600;
+            }
+
+    .char-counter {
+        font-size: 0.85rem;
+        color: #a0aec0;
+        text-align: right;
+        margin-top: 5px;
+    }
+
+    .custom-checkbox {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: #f7fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+        .custom-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .custom-checkbox label {
+            margin: 0;
+            font-weight: 500;
+        }
+
+    @@media (max-width: 768px) {
+        .org-body {
+            padding: 30px 25px;
+        }
+
+        .org-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .focus-area-item {
+            flex: 0 0 calc(50% - 10px);
+        }
+    }
+
+    .avatar-upload-container {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+        padding: 1.5rem;
+        background: #f7fafc;
+        border: 2px dashed #e2e8f0;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .avatar-upload-container:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+    .avatar-preview {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: white;
+        border: 3px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #a0aec0;
+        overflow: hidden;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+        .avatar-preview i {
+            font-size: 3rem;
+        }
+
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .avatar-preview p {
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+    .avatar-upload-info {
+        flex: 1;
+    }
+
+    .btn-outline-primary {
+        border: 2px solid #667eea;
+        color: #667eea;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-outline-primary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+    @@media (max-width: 768px) {
+        .avatar-upload-container {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .avatar-upload-info {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="org-register-wrapper">
+    <div class="container">
+        <div class="org-register-card">
+            <!-- Header -->
+            <div class="org-header">
+                <div class="mb-3">
+                    <i class="bi bi-building" style="font-size: 3rem;"></i>
+                </div>
+                <h2>Đăng ký Ban Tổ Chức</h2>
+                <p>Tham gia cùng chúng tôi để tạo ra những hoạt động tình nguyện ý nghĩa</p>
+            </div>
+
+            <!-- Body -->
+            <div class="org-body">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <form asp-action="Register" method="post" id="registerForm" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <!-- THÔNG TIN CƠ BẢN -->
+                    <div class="section-title">
+                        <i class="bi bi-info-circle-fill"></i>Thông tin cơ bản
+                    </div>
+
+                    <!-- Avatar Upload -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Logo/Ảnh đại diện tổ chức (Không bắt buộc)</label>
+                        <div class="avatar-upload-container">
+                            <div class="avatar-preview" id="avatarPreview">
+                                <i class="bi bi-building"></i>
+                                <p class="mb-0 mt-2">Chọn ảnh</p>
+                            </div>
+                            <div class="avatar-upload-info">
+                                <label for="avatarInput" class="btn btn-outline-primary mb-2">
+                                    <i class="bi bi-cloud-upload me-2"></i>Tải ảnh lên
+                                </label>
+                                <input type="file"
+                                       id="avatarInput"
+                                       name="AvatarFile"
+                                       accept="image/*"
+                                       style="display: none;"
+                                       onchange="previewAvatar(this)" />
+                                <p class="text-muted small mb-1">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Định dạng: JPG, PNG, GIF
+                                </p>
+                                <p class="text-muted small mb-0">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Kích thước tối đa: 5MB
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label asp-for="Name" class="form-label">Tên tổ chức <span class="text-danger">*</span></label>
+                            <input asp-for="Name" class="form-control" placeholder="VD: Nhóm Tình Nguyện Xanh TP.HCM" maxlength="200" required />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="OrganizationType" class="form-label">Loại tổ chức <span class="text-danger">*</span></label>
+                            <select asp-for="OrganizationType" class="form-select" required>
+                                <option value="">-- Chọn loại --</option>
+                                <option value="NGO">NGO/Phi lợi nhuận</option>
+                                <option value="Volunteer">Nhóm tình nguyện</option>
+                                <option value="Social">Doanh nghiệp xã hội</option>
+                                <option value="School">Trường học/Đại học</option>
+                                <option value="Government">Cơ quan nhà nước</option>
+                                <option value="Other">Khác</option>
+                            </select>
+                            <span asp-validation-for="OrganizationType" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Mô tả tổ chức <span class="text-danger">*</span></label>
+                        <textarea asp-for="Description" class="form-control" rows="5" placeholder="Giới thiệu về sứ mệnh, tầm nhìn và các hoạt động chính của tổ chức..." maxlength="2000" id="descriptionInput" required></textarea>
+                        <div class="char-counter">
+                            <span id="charCount">0</span>/2000 ký tự
+                        </div>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <!-- LĨNH VỰC HOẠT ĐỘNG - FIX QUAN TRỌNG -->
+                    <div class="section-title">
+                        <i class="bi bi-tags-fill"></i>Lĩnh vực hoạt động
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Chọn lĩnh vực (có thể chọn nhiều) <span class="text-danger">*</span></label>
+                        <div class="focus-area-checkbox" id="focusAreasContainer">
+                            @{
+                                var areas = new[] { "Môi trường", "Giáo dục", "Y tế", "Trẻ em", "Người cao tuổi", "Người khuyết tật", "Cộng đồng", "Động vật", "Văn hóa" };
+                            }
+                            @foreach (var area in areas)
+                            {
+                                <div class="focus-area-item">
+                                    <label>
+                                        <!-- FIX: Bỏ index, chỉ dùng name="FocusAreas" -->
+                                        <input type="checkbox"
+                                               name="FocusAreas"
+                                               value="@area"
+                                               class="form-check-input focus-area-checkbox-input" />
+                                        @area
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <span id="focusAreasError" class="text-danger small"></span>
+                    </div>
+
+                    <!-- THÔNG TIN LIÊN HỆ -->
+                    <div class="section-title">
+                        <i class="bi bi-telephone-fill"></i>Thông tin liên hệ
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ContactEmail" class="form-label">Email liên hệ <span class="text-danger">*</span></label>
+                            <input asp-for="ContactEmail" class="form-control" type="email" placeholder="contact@organization.vn" required />
+                            <span asp-validation-for="ContactEmail" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="PhoneNumber" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="0901234567" required />
+                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Website" class="form-label">Website (không bắt buộc)</label>
+                        <input asp-for="Website" class="form-control" placeholder="https://www.organization.vn" />
+                        <span asp-validation-for="Website" class="text-danger small"></span>
+                    </div>
+
+                    <!-- ĐỊA CHỈ -->
+                    <div class="section-title">
+                        <i class="bi bi-geo-alt-fill"></i>Địa chỉ trụ sở
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="City" class="form-label">Tỉnh/Thành phố <span class="text-danger">*</span></label>
+                            <select asp-for="City" class="form-select" id="citySelect" required>
+                                <option value="">-- Chọn tỉnh/thành --</option>
+                                <option value="Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                                <option value="Hà Nội">Hà Nội</option>
+                                <option value="Đà Nẵng">Đà Nẵng</option>
+                                <option value="Cần Thơ">Cần Thơ</option>
+                                <option value="Hải Phòng">Hải Phòng</option>
+                            </select>
+                            <span asp-validation-for="City" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="District" class="form-label">Quận/Huyện <span class="text-danger">*</span></label>
+                            <select asp-for="District" class="form-select" id="districtSelect" required>
+                                <option value="">-- Chọn quận/huyện --</option>
+                            </select>
+                            <span asp-validation-for="District" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Ward" class="form-label">Phường/Xã (không bắt buộc)</label>
+                            <input asp-for="Ward" class="form-control" placeholder="Phường 1" />
+                            <span asp-validation-for="Ward" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label">Địa chỉ chi tiết <span class="text-danger">*</span></label>
+                        <input asp-for="Address" class="form-control" placeholder="Số nhà, tên đường..." required />
+                        <span asp-validation-for="Address" class="text-danger small"></span>
+                    </div>
+
+                    <!-- THÔNG TIN PHÁP LÝ -->
+                    <div class="section-title">
+                        <i class="bi bi-file-text-fill"></i>Thông tin pháp lý (không bắt buộc)
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="TaxCode" class="form-label">Mã số thuế/ĐKKD</label>
+                            <input asp-for="TaxCode" class="form-control" placeholder="0123456789" />
+                            <span asp-validation-for="TaxCode" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="FoundedDate" class="form-label">Ngày thành lập</label>
+                            <input asp-for="FoundedDate" class="form-control" type="date" />
+                            <span asp-validation-for="FoundedDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="LegalRepresentative" class="form-label">Người đại diện pháp luật</label>
+                            <input asp-for="LegalRepresentative" class="form-control" placeholder="Nguyễn Văn A" />
+                            <span asp-validation-for="LegalRepresentative" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- XÁC MINH -->
+                    <div class="section-title">
+                        <i class="bi bi-shield-check"></i>Tài liệu xác minh (không bắt buộc)
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DocumentType" class="form-label">Loại tài liệu</label>
+                            <select asp-for="DocumentType" class="form-select">
+                                <option value="">-- Chọn loại --</option>
+                                <option value="License">Giấy phép hoạt động</option>
+                                <option value="Registration">Giấy đăng ký kinh doanh</option>
+                                <option value="Decision">Quyết định thành lập</option>
+                                <option value="Other">Khác</option>
+                            </select>
+                            <span asp-validation-for="DocumentType" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="VerificationDocsUrl" class="form-label">Link tài liệu</label>
+                            <input asp-for="VerificationDocsUrl" class="form-control" placeholder="https://drive.google.com/..." />
+                            <small class="text-muted d-block">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Google Drive, Dropbox, OneDrive...
+                            </small>
+                            <span asp-validation-for="VerificationDocsUrl" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- MẠNG XÃ HỘI -->
+                    <div class="section-title">
+                        <i class="bi bi-share-fill"></i>Mạng xã hội (không bắt buộc)
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="FacebookUrl" class="form-label">Facebook Page</label>
+                            <input asp-for="FacebookUrl" class="form-control" placeholder="https://facebook.com/your-page" />
+                            <span asp-validation-for="FacebookUrl" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ZaloNumber" class="form-label">Zalo</label>
+                            <input asp-for="ZaloNumber" class="form-control" placeholder="0901234567" />
+                            <span asp-validation-for="ZaloNumber" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- THỐNG KÊ -->
+                    <div class="section-title">
+                        <i class="bi bi-graph-up"></i>Thông tin bổ sung (không bắt buộc)
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="MemberCount" class="form-label">Số thành viên</label>
+                            <input asp-for="MemberCount" class="form-control" type="number" min="0" placeholder="50" />
+                            <span asp-validation-for="MemberCount" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="EventsOrganized" class="form-label">Số sự kiện đã tổ chức</label>
+                            <input asp-for="EventsOrganized" class="form-control" type="number" min="0" placeholder="10" />
+                            <span asp-validation-for="EventsOrganized" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label asp-for="Achievements" class="form-label">Thành tích nổi bật</label>
+                            <textarea asp-for="Achievements" class="form-control" rows="3" placeholder="Các giải thưởng, thành tích đáng nhớ..." maxlength="1000"></textarea>
+                            <span asp-validation-for="Achievements" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- SUBMIT -->
+                    <button type="submit" class="btn btn-register w-100 mb-3 d-flex justify-content-center align-items-center gap-2">
+                        <i class="bi bi-check-circle"></i> <span>Đăng ký ngay</span>
+                    </button>
+
+                    <div class="text-center">
+                        <a asp-controller="Home" asp-action="Index" class="text-decoration-none" style="color: #667eea;">
+                            <i class="bi bi-arrow-left me-1"></i>Quay lại trang chủ
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Character counter
+        const descInput = document.getElementById('descriptionInput');
+        const charCount = document.getElementById('charCount');
+
+        if (descInput && charCount) {
+            descInput.addEventListener('input', function () {
+                charCount.textContent = this.value.length;
+            });
+            charCount.textContent = descInput.value.length;
+        }
+
+        // Focus areas validation - FIX QUAN TRỌNG
+        const form = document.getElementById('registerForm');
+        const focusAreasError = document.getElementById('focusAreasError');
+
+        form.addEventListener('submit', function (e) {
+            const checkboxes = document.querySelectorAll('.focus-area-checkbox-input:checked');
+
+            console.log('Submit form - Số checkbox được chọn:', checkboxes.length);
+
+            if (checkboxes.length === 0) {
+                e.preventDefault();
+                focusAreasError.textContent = 'Vui lòng chọn ít nhất một lĩnh vực hoạt động';
+                document.getElementById('focusAreasContainer').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return false;
+            } else {
+                focusAreasError.textContent = '';
+            }
+        });
+
+        // Avatar preview
+        function previewAvatar(input) {
+            const preview = document.getElementById('avatarPreview');
+
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+
+                // Validate file type
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Chỉ chấp nhận file ảnh (JPG, PNG, GIF)');
+                    input.value = '';
+                    return;
+                }
+
+                // Validate file size (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Kích thước file không được vượt quá 5MB');
+                    input.value = '';
+                    return;
+                }
+
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Avatar Preview" />`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Districts data
+        const districtsData = {
+            'Hồ Chí Minh': [
+                'Quận 1', 'Quận 2', 'Quận 3', 'Quận 4', 'Quận 5', 'Quận 6', 'Quận 7', 'Quận 8',
+                'Quận 9', 'Quận 10', 'Quận 11', 'Quận 12', 'Quận Bình Tân', 'Quận Bình Thạnh',
+                'Quận Gò Vấp', 'Quận Phú Nhuận', 'Quận Tân Bình', 'Quận Tân Phú', 'Quận Thủ Đức',
+                'Huyện Bình Chánh', 'Huyện Cần Giờ', 'Huyện Củ Chi', 'Huyện Hóc Môn', 'Huyện Nhà Bè'
+            ],
+            'Hà Nội': [
+                'Quận Ba Đình', 'Quận Hoàn Kiếm', 'Quận Tây Hồ', 'Quận Long Biên', 'Quận Cầu Giấy',
+                'Quận Đống Đa', 'Quận Hai Bà Trưng', 'Quận Hoàng Mai', 'Quận Thanh Xuân'
+            ],
+            'Đà Nẵng': [
+                'Quận Cẩm Lệ', 'Quận Hải Châu', 'Quận Liên Chiểu', 'Quận Ngũ Hành Sơn',
+                'Quận Sơn Trà', 'Quận Thanh Khê', 'Huyện Hòa Vang'
+            ],
+            'Cần Thơ': [
+                'Quận Bình Thủy', 'Quận Cái Răng', 'Quận Ninh Kiều', 'Quận Ô Môn', 'Quận Thốt Nốt'
+            ],
+            'Hải Phòng': [
+                'Quận Dương Kinh', 'Quận Đồ Sơn', 'Quận Hải An', 'Quận Hồng Bàng', 'Quận Kiến An',
+                'Quận Lê Chân', 'Quận Ngô Quyền'
+            ]
+        };
+
+        // Load districts when city changes
+        document.getElementById('citySelect').addEventListener('change', function() {
+            const city = this.value;
+            const districtSelect = document.getElementById('districtSelect');
+
+            // Clear current options
+            districtSelect.innerHTML = '<option value="">-- Chọn quận/huyện --</option>';
+
+            // Load districts for selected city
+            if (city && districtsData[city]) {
+                districtsData[city].forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district;
+                    option.textContent = district;
+                    districtSelect.appendChild(option);
+                });
+                districtSelect.disabled = false;
+            } else if (city) {
+                // For other cities, allow manual input
+                const option = document.createElement('option');
+                option.value = 'Khác';
+                option.textContent = 'Khác (nhập thủ công)';
+                districtSelect.appendChild(option);
+                districtSelect.disabled = false;
+            } else {
+                districtSelect.disabled = true;
+            }
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const citySelect = document.getElementById('citySelect');
+            if (citySelect.value) {
+                citySelect.dispatchEvent(new Event('change'));
+            }
+        });
+    </script>
+}

@@ -1,0 +1,202 @@
+wwwroot\admin\css\admin-style.css
+wwwroot\admin\js\JavaScript.js
+wwwroot\css\site.css
+wwwroot\favicon.ico
+wwwroot\images\1.jpg
+wwwroot\images\anhcongdong.jpg
+wwwroot\images\avatars\0b470dd5-ef81-4c0c-8344-137b9a204753.jpg
+wwwroot\images\avatars\2cbc2b3e-bb4f-4a3e-9ace-34c9d90aa3b3.png
+wwwroot\images\avatars\428282ea-28fd-4fed-85f0-d09ac148cac8.jpg
+wwwroot\images\avatars\60ef67f4-a281-494f-930b-fac4563b8494.jpg
+wwwroot\images\avatars\639b3959-fd52-41fd-a9c3-fb7efbe64bed.jpg
+wwwroot\images\avatars\67b957ce-1102-4666-a247-4375410cd60b.jpg
+wwwroot\images\avatars\6e7b4325-995e-4398-b9fa-a36220acd583.jpg
+wwwroot\images\avatars\8a0ea0f4-c98b-43cf-aa74-f811e027f629.jpg
+wwwroot\images\avatars\a25a2d34-0291-4d46-b837-ef0e5bcafb36.jpg
+wwwroot\images\avatars\bf896153-f903-4ba1-8f44-5df280f7458f.png
+wwwroot\images\avatars\e64ae8f0-05dd-4ea5-aa66-a3da10b323e6.png
+wwwroot\images\avatars\fe5c6722-f4fd-4aa0-89f1-a509cd37cae8.jpg
+wwwroot\images\congdong.jpg
+wwwroot\images\donate-qr.png
+wwwroot\images\events\012ee367-77c2-49f4-89ef-d713c6b871c3_hinhvongtron.jpg
+wwwroot\images\events\28a02bd3-e6f8-423f-b29f-4e251cc01573_khamsuckhoevatuvanmienphi.jpg
+wwwroot\images\events\2c14e3ad-7240-422d-b35f-aeb24b007088_Dọn rác bãi biển Vũng Tàu (Đợt 1).jpg
+wwwroot\images\events\36db92fb-61f4-4fd1-b3a9-863c306ceddd_tangquachonguoineodongiadiptet.JPG
+wwwroot\images\events\41030a1b-f88d-4d1f-9aad-d7fb4ac1b3a4_Lớp học tình thương.jpg
+wwwroot\images\events\49335fcc-5584-4f56-a020-5bc9dcfc4939_Tuần lễ Không Túi Nilon.jpg
+wwwroot\images\events\707e2594-3190-493e-a232-8013605102a4_Chiến dịch Giờ Trái Đất 2026.jpg
+wwwroot\images\events\7634517a-e42f-48ae-8e3d-b812a8ba26ba_capcuu1.webp
+wwwroot\images\events\7731f044-87bf-452e-adcd-bb5d2cc9c5f5_tangquachonguoineodongiadiptet.JPG
+wwwroot\images\events\80465f9c-7b11-45ae-9fee-da87a7ba8ac0_LamSachBien.jpg
+wwwroot\images\events\86710ff9-b1a0-482e-8579-088d9ea16eed_Nấu Cơm Nghĩa Tình Viện Dưỡng Lão.jpg
+wwwroot\images\events\8a6ff202-dac1-4e61-aa82-c45f45fb6e91_Phát Khẩu Trang Cộng Đồng.jpg
+wwwroot\images\events\8e37b1cf-96c3-40fb-9bd4-826594ae5493_Ngày hội Đạp Xe Vì Môi Trường.jpg
+wwwroot\images\events\9836f6c4-58d1-4884-af0d-4b378bf4ae77_thugomrac.jpg
+wwwroot\images\events\9cb0506c-9a31-4df5-914c-5201e423b46c_vietnamvolunteer.jpg
+wwwroot\images\events\ad1218b7-8ebf-40d6-bf19-46765236c144_logogmail.jpg
+wwwroot\images\events\af74ecd4-1c9c-4ee2-9243-452918cff168_Tập huấn Kỹ năng sống xanh.jpg
+wwwroot\images\events\aff4e333-ef5a-41af-af55-d540c4ebbfd2_TrongCay.jpg
+wwwroot\images\events\b0653758-8a9e-4b8a-815e-e87b63c2403e_volunteers.png
+wwwroot\images\events\b1cb1c4f-264a-417e-9685-35191eb8ab37_hoi-tu-thien-minh-tam-ha-noi-653096.jpg
+wwwroot\images\events\cf76efe4-96b1-4963-8193-15929d48ffdb_Thu gom Pin cũ - Bảo vệ đất.webp
+wwwroot\images\events\d6f24cd7-70ba-437c-83c4-e584f2fc0268_Trồng 1000 cây xanh tại Cần Giờ.jpg
+wwwroot\images\events\e3edf6cd-420c-4b01-86d6-91c7b5ff31f1_LamSachBien.jpg
+wwwroot\images\events\e681d2ff-4d22-4b5d-a0ce-98c01c45f639_phatdo.png
+wwwroot\images\events\f92c7b5c-10fb-46ea-b06f-b102995a401e_LamSachBien.jpg
+wwwroot\images\events\fba249f1-bd17-4226-9c62-5d07081f35eb_Đổi Pin Cũ Lấy Cây Xanh.jpg
+wwwroot\images\events\ff79a438-ba5f-4a28-96e4-7032315fa75f_Workshop.jpg
+wwwroot\images\hinhvongtron.jpg
+wwwroot\images\Loc.jpg
+wwwroot\images\logo.jpg
+wwwroot\images\logofb.jpg
+wwwroot\images\logogmail.jpg
+wwwroot\images\momo-logo.png
+wwwroot\images\organizations\0febec4d-497f-4e3a-89e2-5e962b32d56d.jpg
+wwwroot\images\organizations\14f18d32-384a-4f07-8d4a-6fe363218590.png
+wwwroot\images\organizations\18d257e7-eb0d-4a7b-9d8a-18ef261d4c42.png
+wwwroot\images\organizations\305b724e-d99c-42c2-a083-b89aaa1cb828.jpg
+wwwroot\images\organizations\348dcb9b-cd3e-4869-b68d-9b2df1a486de.jpg
+wwwroot\images\organizations\41beacec-0085-4446-b94d-88f4165d9235.png
+wwwroot\images\organizations\5e603298-b569-47e7-8cb9-b47739110ba1.jpg
+wwwroot\images\organizations\af6b626e-f13e-4190-9cbe-64be47245fa9.png
+wwwroot\images\organizations\b2b2c855-d000-4082-8579-f3038ecce924.png
+wwwroot\images\organizations\b53c8ba9-54e7-4bf9-bb33-1ea4bc9b9502.png
+wwwroot\images\organizations\c3be23b4-7297-4629-a643-1f9adb2d9d16.jpg
+wwwroot\images\organizations\c423c752-b9a8-47a6-8679-40323022a700.png
+wwwroot\images\organizations\cce5fcbe-7732-4c52-b8e2-c33481578c5b.jpg
+wwwroot\images\organizations\cfad0a29-4e54-4bcd-9953-6a57c54a821e.jpg
+wwwroot\images\organizations\dc11e17f-2628-4a2e-9f1e-8de608314454.png
+wwwroot\images\organizations\e0609684-664b-4e5f-b207-211c646c5f98.png
+wwwroot\images\organizations\fc411d13-3dd9-4ac4-8769-f9b1c8e7f992.jpg
+wwwroot\images\Tai.jpg
+wwwroot\images\Thanh.jpg
+wwwroot\images\tochucxanhvn.jpg
+wwwroot\images\volunteer-login.jpg
+wwwroot\images\volunteer_team.png
+wwwroot\images\vongtay.jpg
+wwwroot\js\site.js
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+wwwroot\lib\bootstrap\LICENSE
+wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.js
+wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.min.js
+wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+wwwroot\lib\jquery-validation\dist\additional-methods.js
+wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+wwwroot\lib\jquery-validation\LICENSE.md
+wwwroot\lib\jquery\dist\jquery.js
+wwwroot\lib\jquery\dist\jquery.min.js
+wwwroot\lib\jquery\dist\jquery.min.map
+wwwroot\lib\jquery\dist\jquery.slim.js
+wwwroot\lib\jquery\dist\jquery.slim.min.js
+wwwroot\lib\jquery\dist\jquery.slim.min.map
+wwwroot\lib\jquery\LICENSE.txt
+wwwroot\uploads\docs\7ebaddee-5f8b-4bf9-9dde-e57ce0561548.doc
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\css\site.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\favicon.ico
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\js\site.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\js\bootstrap.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.min.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery-validation\dist\additional-methods.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery-validation\dist\jquery.validate.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery-validation\LICENSE.md
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery\dist\jquery.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery\dist\jquery.min.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery\dist\jquery.min.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery\dist\jquery.slim.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery\dist\jquery.slim.min.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery\dist\jquery.slim.min.map
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\lib\jquery\LICENSE.txt
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\admin\js\JavaScript.js
+D:\Hoc Tap\VS\DACNN\TinhNguyenXanh\wwwroot\admin\css\admin-style.css

@@ -1,0 +1,624 @@
+﻿@model TinhNguyenXanh.DTOs.EventDTO
+@{
+    ViewData["Title"] = "Tạo sự kiện mới";
+    Layout = "~/Areas/Organizer/Views/Shared/_OrganizationLayout.cshtml";
+}
+
+<style>
+    /* ==================== PAGE HEADER ==================== */
+    .page-header {
+        background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #d1fae5;
+    }
+
+        .page-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.75rem;
+        }
+
+    .page-header-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-back {
+        background: white;
+        border: 2px solid #e5e7eb;
+        color: #6b7280;
+        padding: 0.625rem 1.25rem;
+        border-radius: 10px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+        .btn-back:hover {
+            background: #f9fafb;
+            border-color: #10b981;
+            color: #10b981;
+            transform: translateY(-2px);
+        }
+
+    /* ==================== FORM CARD ==================== */
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .form-section {
+        padding: 2rem;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+        .form-section:last-child {
+            border-bottom: none;
+        }
+
+    .section-title {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        color: #1f2937;
+        font-size: 1.125rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .section-title i {
+            color: #10b981;
+            font-size: 1.25rem;
+        }
+
+    /* ==================== FORM CONTROLS ==================== */
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.9375rem;
+    }
+
+        .form-label i {
+            color: #10b981;
+            font-size: 1rem;
+        }
+
+    .form-control,
+    .form-select {
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #10b981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            outline: none;
+        }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .form-text {
+        color: #6b7280;
+        font-size: 0.8125rem;
+        margin-top: 0.375rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+        .form-text i {
+            font-size: 0.875rem;
+        }
+
+    /* ==================== IMAGE PREVIEW ==================== */
+    .image-upload-section {
+        background: linear-gradient(135deg, #f9fafb 0%, #f0fdf4 100%);
+        border: 2px dashed #d1fae5;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+        .image-upload-section:hover {
+            border-color: #10b981;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        }
+
+    .image-preview-container {
+        position: relative;
+        max-width: 100%;
+        margin-top: 1rem;
+    }
+
+    .image-preview {
+        max-width: 100%;
+        max-height: 400px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        display: none;
+    }
+
+        .image-preview.show {
+            display: block;
+        }
+
+    .remove-image {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+
+        .remove-image.show {
+            display: flex;
+        }
+
+        .remove-image:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+    .upload-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #d1fae5, #ecfdf5);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: #10b981;
+        font-size: 2rem;
+    }
+
+    .upload-text {
+        color: #1f2937;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .upload-hint {
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+
+    /* ==================== ACTION BUTTONS ==================== */
+    .action-buttons {
+        background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+        padding: 2rem;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: none;
+        color: white;
+        padding: 0.875rem 2.5rem;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.625rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            color: white;
+        }
+
+    .btn-cancel {
+        background: white;
+        border: 2px solid #e5e7eb;
+        color: #6b7280;
+        padding: 0.875rem 2rem;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.625rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+        .btn-cancel:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: #374151;
+        }
+
+    /* ==================== VALIDATION ==================== */
+    .text-danger {
+        color: #ef4444;
+        font-size: 0.8125rem;
+        margin-top: 0.375rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+        .text-danger::before {
+            content: "⚠";
+            font-size: 0.875rem;
+        }
+
+    .validation-summary-errors {
+        background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
+        border-left: 4px solid #ef4444;
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+        .validation-summary-errors ul {
+            margin: 0;
+            padding-left: 1.25rem;
+            color: #dc2626;
+        }
+
+    /* ==================== RESPONSIVE ==================== */
+    @@media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem;
+        }
+
+            .page-header h2 {
+                font-size: 1.25rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+        .page-header-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.25rem;
+        }
+
+        .form-section {
+            padding: 1.5rem;
+        }
+
+        .action-buttons {
+            padding: 1.5rem;
+            flex-direction: column;
+        }
+
+        .btn-submit,
+        .btn-cancel {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    /* ==================== ANIMATIONS ==================== */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-card {
+        animation: fadeIn 0.4s ease-out;
+    }
+</style>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <h2>
+            <span class="page-header-icon">
+                <i class="bi bi-plus-circle"></i>
+            </span>
+            Tạo sự kiện mới
+        </h2>
+        <a asp-action="Index" class="btn-back">
+            <i class="bi bi-arrow-left"></i>
+            <span>Quay lại</span>
+        </a>
+    </div>
+</div>
+
+<!-- FORM -->
+<form asp-action="Create" asp-controller="EventManagement" asp-area="Organizer"
+      method="post" enctype="multipart/form-data">
+
+    <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+    <div class="form-card">
+        <!-- THÔNG TIN CỨ BẢN -->
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="bi bi-info-circle"></i>
+                Thông tin cơ bản
+            </h3>
+
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label asp-for="Title" class="form-label">
+                        <i class="bi bi-card-heading"></i>
+                        Tên sự kiện
+                    </label>
+                    <input asp-for="Title" class="form-control" placeholder="Ví dụ: Chiến dịch làm sạch bãi biển..." />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="CategoryId" class="form-label">
+                        <i class="bi bi-tag"></i>
+                        Danh mục
+                    </label>
+                    <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+                        <option value="">-- Chọn danh mục --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label">
+                        <i class="bi bi-text-paragraph"></i>
+                        Mô tả chi tiết
+                    </label>
+                    <textarea asp-for="Description" class="form-control" rows="5"
+                              placeholder="Mô tả chi tiết về sự kiện, mục đích, hoạt động dự kiến..."></textarea>
+                    <div class="form-text">
+                        <i class="bi bi-info-circle"></i>
+                        Mô tả rõ ràng sẽ giúp thu hút nhiều tình nguyện viên hơn
+                    </div>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- THỜI GIAN & ĐỊA ĐIỂM -->
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="bi bi-calendar-event"></i>
+                Thời gian & Địa điểm
+            </h3>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="StartTime" class="form-label">
+                        <i class="bi bi-calendar-check"></i>
+                        Thời gian bắt đầu
+                    </label>
+                    <input asp-for="StartTime" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="EndTime" class="form-label">
+                        <i class="bi bi-calendar-x"></i>
+                        Thời gian kết thúc
+                    </label>
+                    <input asp-for="EndTime" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-8">
+                    <label asp-for="Location" class="form-label">
+                        <i class="bi bi-geo-alt"></i>
+                        Địa điểm
+                    </label>
+                    <input asp-for="Location" class="form-control"
+                           placeholder="Ví dụ: Công viên Lê Văn Tám, Quận 1, TP.HCM" />
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="LocationCoords" class="form-label">
+                        <i class="bi bi-pin-map"></i>
+                        Tọa độ (tùy chọn)
+                    </label>
+                    <input asp-for="LocationCoords" class="form-control"
+                           placeholder="10.762622,106.660172" />
+                    <div class="form-text">
+                        <i class="bi bi-info-circle"></i>
+                        Format: Lat,Lng
+                    </div>
+                    <span asp-validation-for="LocationCoords" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SỐ LƯỢNG & HÌNH ẢNH -->
+        <div class="form-section">
+            <h3 class="section-title">
+                <i class="bi bi-people"></i>
+                Tình nguyện viên & Hình ảnh
+            </h3>
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="MaxVolunteers" class="form-label">
+                        <i class="bi bi-person-plus"></i>
+                        Số lượng TNV tối đa
+                    </label>
+                    <input asp-for="MaxVolunteers" type="number" min="1" class="form-control"
+                           placeholder="Ví dụ: 50" />
+                    <div class="form-text">
+                        <i class="bi bi-info-circle"></i>
+                        Số người tham gia tối đa
+                    </div>
+                    <span asp-validation-for="MaxVolunteers" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-8">
+                    <label class="form-label">
+                        <i class="bi bi-image"></i>
+                        Hình ảnh minh họa
+                    </label>
+                    <div class="image-upload-section">
+                        <div class="upload-icon">
+                            <i class="bi bi-cloud-upload"></i>
+                        </div>
+                        <p class="upload-text">Kéo thả ảnh hoặc click để chọn</p>
+                        <p class="upload-hint">JPG, PNG, GIF - Tối đa 5MB</p>
+                        <input type="file" name="ImageFile" id="imageInput"
+                               class="form-control mt-3" accept="image/*" />
+                    </div>
+
+                    <div class="image-preview-container">
+                        <img id="imagePreview" class="image-preview" alt="Preview" />
+                        <button type="button" id="removeImage" class="remove-image">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="action-buttons">
+            <button type="submit" class="btn-submit">
+                <i class="bi bi-check-circle"></i>
+                Tạo sự kiện
+            </button>
+            <a asp-action="Index" class="btn-cancel">
+                <i class="bi bi-x-circle"></i>
+                Hủy bỏ
+            </a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageInput = document.getElementById('imageInput');
+            const imagePreview = document.getElementById('imagePreview');
+            const removeImageBtn = document.getElementById('removeImage');
+            const uploadSection = document.querySelector('.image-upload-section');
+
+            // Preview image when selected
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Check file size (5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('Kích thước file không được vượt quá 5MB!');
+                        imageInput.value = '';
+                        return;
+                    }
+
+                    // Check file type
+                    if (!file.type.startsWith('image/')) {
+                        alert('Vui lòng chọn file hình ảnh!');
+                        imageInput.value = '';
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.classList.add('show');
+                        removeImageBtn.classList.add('show');
+                        uploadSection.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Remove image
+            removeImageBtn.addEventListener('click', function() {
+                imageInput.value = '';
+                imagePreview.src = '';
+                imagePreview.classList.remove('show');
+                removeImageBtn.classList.remove('show');
+                uploadSection.style.display = 'block';
+            });
+
+            // Drag and drop
+            uploadSection.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#10b981';
+                this.style.background = 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)';
+            });
+
+            uploadSection.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#d1fae5';
+                this.style.background = 'linear-gradient(135deg, #f9fafb 0%, #f0fdf4 100%)';
+            });
+
+            uploadSection.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#d1fae5';
+                this.style.background = 'linear-gradient(135deg, #f9fafb 0%, #f0fdf4 100%)';
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    imageInput.files = files;
+                    imageInput.dispatchEvent(new Event('change'));
+                }
+            });
+
+            // Click to upload
+            uploadSection.addEventListener('click', function(e) {
+                if (e.target !== imageInput) {
+                    imageInput.click();
+                }
+            });
+        });
+    </script>
+}

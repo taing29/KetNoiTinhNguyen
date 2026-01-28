@@ -1,0 +1,348 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using TinhNguyenXanh.Data
+@using TinhNguyenXanh.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext _context
+
+<style>
+    :root {
+        --primary-color: #16a34a;
+        --primary-dark: #15803d;
+        --primary-light: #d1fae5;
+        --text-dark: #1f2937;
+        --text-light: #6b7280;
+        --border-color: #e5e7eb;
+    }
+
+    /* Auth Buttons */
+    .auth-buttons {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-login,
+    .btn-register {
+        padding: 0.6rem 0.6rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+        white-space: nowrap;
+    }
+
+    .btn-login {
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        background: white;
+    }
+
+        .btn-login:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+    .btn-register {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        border: none;
+        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+        white-space: nowrap; /* Thêm dòng này */
+        flex-shrink: 0; /* Thêm dòng này */
+    }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(22, 163, 74, 0.4);
+            color: white;
+        }
+
+    /* User Dropdown */
+    .user-dropdown .dropdown-toggle {
+        background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        border: 1px solid var(--border-color);
+        padding: 0.6rem 1.2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        color: var(--text-dark);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+        .user-dropdown .dropdown-toggle:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
+        }
+
+        .user-dropdown .dropdown-toggle::after {
+            margin-left: 8px;
+            border-top-color: var(--primary-color);
+        }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .badge-role {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        color: #92400e;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .user-dropdown .dropdown-menu {
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        padding: 0.5rem;
+        min-width: 280px;
+        margin-top: 10px;
+    }
+
+    .user-dropdown .dropdown-item {
+        padding: 0.8rem 1.2rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+    }
+
+        .user-dropdown .dropdown-item:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding-left: 1.5rem;
+        }
+
+        .user-dropdown .dropdown-item i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+    .dropdown-header-custom {
+        padding: 0.8rem 1.2rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .logout-btn {
+        color: #dc2626;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+        padding: 0.8rem 1.2rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+        .logout-btn:hover {
+            background: #fee2e2;
+            padding-left: 1.5rem;
+        }
+
+    @@media (max-width: 991px) {
+        .auth-buttons {
+            margin-top: 1rem;
+            flex-direction: column;
+            width: 100%;
+            white-space: nowrap;
+        }
+
+        .btn-login,
+        .btn-register {
+            width: 100%;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+           
+        }
+
+        .user-dropdown .dropdown-toggle {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var roles = await UserManager.GetRolesAsync(currentUser);
+    var isOrganizer = roles.Contains("Organizer");
+
+    // Nếu là volunteer thì đảm bảo có bản ghi Volunteer
+    if (!isOrganizer)
+    {
+        var volunteer = _context.Volunteers.FirstOrDefault(v => v.UserId == currentUser.Id);
+        if (volunteer == null)
+        {
+            volunteer = new Volunteer
+            {
+                UserId = currentUser.Id,
+                FullName = currentUser.FullName ?? currentUser.UserName,
+                Phone = currentUser.PhoneNumber,
+                JoinedDate = DateTime.UtcNow
+            };
+            _context.Volunteers.Add(volunteer);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    <!-- Dropdown người dùng -->
+    <div class="nav-item dropdown user-dropdown">
+        <a class="dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="user-avatar">
+                @(currentUser.FullName?.Substring(0, 1).ToUpper() ?? "U")
+            </div>
+            <span class="d-none d-lg-inline">@currentUser.FullName</span>
+            @if (isOrganizer)
+            {
+                <span class="badge-role">
+                    <i class="bi bi-building-fill-check"></i> BTC
+                </span>
+            }
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <!-- Header -->
+            <li class="dropdown-header-custom">
+                <div class="d-flex align-items-center">
+                    <div class="user-avatar me-2">
+                        @(currentUser.FullName?.Substring(0, 1).ToUpper() ?? "U")
+                    </div>
+                    <div>
+                        <div class="fw-bold">@currentUser.FullName</div>
+                        <small>@currentUser.Email</small>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Menu cho Organizer -->
+            @if (isOrganizer)
+            {
+                <li>
+                    <a class="dropdown-item" asp-area="Organizer" asp-controller="EventManagement" asp-action="Index">
+                        <i class="bi bi-building-gear"></i> Quản lý Tổ chức
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-area="Organizer" asp-controller="EventManagement" asp-action="Index">
+                        <i class="bi bi-calendar-event"></i> Sự kiện của tôi
+                    </a>
+                </li>
+            }
+            else
+            {
+                <!-- Menu cho Volunteer -->
+                <li>
+                    <a class="dropdown-item" asp-controller="Event" asp-action="Dashboard">
+                        <i class="bi bi-speedometer2"></i> Tổng quan
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Event" asp-action="Index">
+                        <i class="bi bi-calendar-event"></i> Tất cả sự kiện
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Event" asp-action="MyRegistrations">
+                        <i class="bi bi-calendar-check"></i> Sự kiện đã đăng ký
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Event" asp-action="Profile">
+                        <i class="bi bi-person-circle"></i> Hồ sơ cá nhân
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Event" asp-action="MyFavorites">
+                        <i class="bi bi-heart-fill me-2 text-danger"></i> Sự kiện yêu thích
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Organization" asp-action="Register">
+                        <i class="bi bi-building-add"></i> Đăng ký Tổ chức
+                    </a>
+                </li>
+            }
+
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/ChangePassword">
+                    <i class="bi bi-key"></i> Đổi mật khẩu
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                    <i class="bi bi-gear"></i> Cài đặt
+                </a>
+            </li>
+
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+                <form asp-area="Identity" asp-page="/Account/Logout" method="post" id="logoutForm" class="m-0">
+                    <button type="submit" class="logout-btn">
+                        <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <!-- Nút đăng nhập/đăng ký -->
+    <div class="auth-buttons">
+        <a class="btn-login" asp-area="Identity" asp-page="/Account/Login">
+            <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+        </a>
+        <a class="btn-register" asp-area="Identity" asp-page="/Account/Register">
+            <i class="bi bi-person-plus"></i> Đăng ký
+        </a>
+    </div>
+}
+
+<script>
+    document.addEventListener('click', function(event) {
+        const dropdown = document.querySelector('.user-dropdown .dropdown-menu');
+        const toggle = document.querySelector('.user-dropdown .dropdown-toggle');
+        if (dropdown && dropdown.classList.contains('show') && !dropdown.contains(event.target) && !toggle.contains(event.target)) {
+            setTimeout(() => {
+                dropdown.classList.remove('show');
+            }, 10);
+        }
+    });
+    document.querySelectorAll('.user-dropdown .dropdown-menu').forEach(menu => {
+        menu.addEventListener('click', e => e.stopPropagation());
+    });
+</script>

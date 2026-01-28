@@ -1,0 +1,508 @@
+﻿@model IEnumerable<TinhNguyenXanh.Models.Event>
+@using Humanizer
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    :root {
+        --primary: #10b981; /* emerald-500 */
+        --primary-dark: #059669; /* emerald-600 */
+        --primary-light: #34d399; /* emerald-400 */
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --dark: #0f172a;
+        --gray: #64748b;
+        --border: #e2e8f0;
+        --shadow-sm: 0 2px 8px rgba(16, 185, 129, 0.08);
+        --shadow-md: 0 8px 24px rgba(16, 185, 129, 0.12);
+        --shadow-lg: 0 16px 48px rgba(16, 185, 129, 0.15);
+    }
+
+    body {
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        min-height: 100vh;
+    }
+
+    /* Header */
+    .page-header {
+        font-weight: 800;
+        color: var(--dark);
+        font-size: 2rem;
+        letter-spacing: -0.5px;
+        position: relative;
+        display: inline-block;
+    }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 2px;
+        }
+
+    /* Animation */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .fade-in {
+        animation: fadeInUp 0.6s ease forwards;
+        opacity: 0;
+    }
+
+        .fade-in.delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .fade-in.delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        .fade-in.delay-3 {
+            animation-delay: 0.3s;
+        }
+
+        .fade-in.delay-4 {
+            animation-delay: 0.4s;
+        }
+
+    /* Search Card */
+    .search-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        max-width: 520px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+        .search-card:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 12px 32px rgba(16, 185, 129, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-card .form-control {
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            background: transparent;
+        }
+
+        .search-card .btn {
+            padding: 1rem 2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            transition: all 0.3s ease;
+        }
+
+            .search-card .btn:hover {
+                background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+                transform: scale(1.05);
+            }
+
+    /* Table Card */
+    .card-table {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid rgba(16, 185, 129, 0.1);
+    }
+
+        .card-table thead {
+            background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+            position: relative;
+        }
+
+            .card-table thead::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 3px;
+                background: linear-gradient(90deg, var(--primary-light), var(--primary), var(--primary-light));
+            }
+
+        .card-table th {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            padding: 1.3rem 1.2rem !important;
+            color: #000;
+            border: none;
+        }
+
+        .card-table tbody tr {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+            .card-table tbody tr:hover {
+                background: linear-gradient(90deg, #f0fdf4 0%, #ecfdf5 100%) !important;
+                transform: scale(1.01);
+                box-shadow: 0 8px 24px rgba(16, 185, 129, 0.12);
+            }
+
+    .event-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 16px;
+        box-shadow: 0 4px 14px rgba(16,185,129,0.3);
+    }
+
+    .event-title {
+        font-weight: 600;
+        color: var(--dark);
+        font-size: 1.05rem;
+    }
+
+    .event-desc {
+        font-size: 0.9rem;
+        color: var(--gray);
+        margin-top: 4px;
+    }
+
+    .org-name {
+        color: var(--gray);
+        font-size: 0.95rem;
+    }
+
+    .badge-category {
+        font-size: 0.75rem;
+        padding: 0.5em 1em;
+        border-radius: 50px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        box-shadow: 0 2px 8px rgba(59,130,246,0.3);
+    }
+
+    .status-badge {
+        font-weight: 700;
+        padding: 0.45em 1.2em;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        letter-spacing: 0.5px;
+    }
+
+        .status-badge.draft {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #000;
+        }
+
+        .status-badge.pending {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+    /* Action Buttons - giống hệt 2 trang trước */
+    .btn-action {
+        width: 52px;
+        height: 52px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        border: 2px solid transparent;
+    }
+
+        .btn-action::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%,-50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .btn-action:hover::before {
+            width: 120%;
+            height: 120%;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-6px) scale(1.1);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+        }
+
+        .btn-action.approve {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .btn-action.reject {
+            background: linear-gradient(135deg, #f87171, #ef4444);
+        }
+
+    /* Pagination */
+    .pagination-wrapper {
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        padding: 2rem;
+        border-top: 2px solid #e2e8f0;
+    }
+
+    .pagination .page-link {
+        color: var(--primary);
+        background: white;
+        border: 2px solid #d1fae5;
+        border-radius: 14px !important;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s;
+    }
+
+    .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        color: white;
+        border-color: var(--primary);
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+        transform: scale(1.1);
+    }
+
+    .pagination .page-link:hover:not(.active) {
+        background: #ecfdf5;
+        border-color: var(--primary);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+    }
+
+    /* Text dài */
+    .text-truncate {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header
+
+    {
+        font-size: 1.6rem;
+    }
+
+    .btn-action {
+        width: 46px;
+        height: 46px;
+        font-size: 1.1rem;
+    }
+
+    }
+</style>
+
+<div class="container-fluid px-4 mt-4">
+    <!-- Header + Search -->
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-5 gap-4 fade-in">
+        <div>
+            <h3 class="page-header m-0">
+               Duyệt Hoạt Động Tình Nguyện
+            </h3>
+            <p class="text-muted mt-2 mb-0">Xem xét và phê duyệt các hoạt động mới được tạo</p>
+        </div>
+        <form asp-action="Index" method="get" class="search-card m-0 fade-in delay-1">
+            <div class="input-group">
+                <input type="text" name="search" value="@ViewBag.Search"
+                       class="form-control" placeholder="Tìm tiêu đề, tổ chức..." autocomplete="off" />
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Success Alert -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success rounded-pill shadow text-center py-3 mb-4 mx-auto fade-in delay-2" style="max-width: 600px;">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong>Thành công!</strong> @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <!-- Table Card -->
+    <div class="card card-table border-0 fade-in delay-2">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Ảnh</th>
+                            <th>Tiêu đề</th>
+                            <th>Tổ chức</th>
+                            <th>Danh mục</th>
+                            <th>Thời gian</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-center">Trạng thái</th>
+                            <th class="text-center">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center py-6">
+                                    <div class="empty-state">
+                                        <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
+                                        <h4 class="text-success">Tuyệt vời!</h4>
+                                        <p class="text-muted">Không còn hoạt động nào chờ duyệt</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var (e, i) in Model.Select((ev, idx) => (ev, idx)))
+                            {
+                                var firstImg = !string.IsNullOrWhiteSpace(e.Images) ? e.Images.Split(',')[0].Trim() : null;
+                                <tr class="fade-in delay-@((i % 4) + 1)">
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(firstImg))
+                                        {
+                                            <img src="@firstImg" class="event-img" alt="Event" />
+                                        }
+                                        else
+                                        {
+                                            <div class="event-img bg-light d-flex align-items-center justify-content-center rounded">
+                                                <i class="fas fa-image text-muted fa-2x"></i>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 240px;" title="@e.Title">
+                                            <span class="event-title">@e.Title</span>
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(e.Description))
+                                        {
+                                            <div class="event-desc text-truncate" style="max-width: 240px;" title="@e.Description">
+                                                @e.Description.Truncate(80)
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="org-name text-truncate d-block" style="max-width: 140px;" title="@(e.Organization?.Name ?? "Chưa xác định")">
+                                            @(e.Organization?.Name ?? "Chưa xác định")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge-category">
+                                            @(e.Category?.Name ?? "Chưa phân loại")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted d-block">@e.StartTime.ToString("dd/MM/yyyy HH:mm")</small>
+                                        <small class="text-muted"> @e.EndTime.ToString("dd/MM/yyyy HH:mm")</small>
+                                    </td>
+                                    <td class="text-center">
+                                        @* <span class="fs-5 fw-bold text-success">@(e.Registrations?.Count ?? 0)</span> *@
+                                        <span class="text-muted">  @e.MaxVolunteers</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="status-badge @(e.Status == "draft" ? "draft" : "pending")">
+                                            @(e.Status == "draft" ? "Bản nháp" : "Chờ duyệt")
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-3">
+                                            <form asp-action="UpdateStatus" method="post" class="d-inline">
+                                                <input type="hidden" name="id" value="@e.Id" />
+                                                <button type="submit" name="actionType" value="approve"
+                                                        class="btn-action approve" title="Duyệt hoạt động">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+                                            <form asp-action="UpdateStatus" method="post" class="d-inline">
+                                                <input type="hidden" name="id" value="@e.Id" />
+                                                <button type="submit" name="actionType" value="reject"
+                                                        class="btn-action reject" title="Từ chối">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            @if (ViewBag.TotalPages is > 1)
+            {
+                <div class="pagination-wrapper fade-in delay-4">
+                    <nav>
+                        <ul class="pagination justify-content-center mb-0">
+                            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { search = ViewBag.Search, page = i })">@i</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Fade-in khi scroll
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.style.opacity = 1;
+                    e.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Tự động ẩn alert
+        setTimeout(() => {
+            const a = document.querySelector('.alert');
+            if (a) {
+                a.style.transition = 'all 0.5s';
+                a.style.opacity = '0';
+                a.style.transform = 'scale(0.9)';
+                setTimeout(() => a.remove(), 500);
+            }
+        }, 5000);
+    </script>
+}

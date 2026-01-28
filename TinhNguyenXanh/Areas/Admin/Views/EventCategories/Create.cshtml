@@ -1,0 +1,144 @@
+﻿@model TinhNguyenXanh.Models.EventCategory
+@{
+    // ViewData["Title"] = "Thêm Danh mục Mới";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    :root {
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --dark: #1e293b;
+        --light: #f8fafc;
+        --border: #e2e8f0;
+    }
+
+    body {
+        background: #e4f3e9;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .page-header {
+        font-weight: 700;
+        color: var(--dark);
+        font-size: 1.8rem;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+        .form-card .card-header {
+            background: linear-gradient(135deg, #10b981, #059669);
+            padding: 1.8rem 2rem;
+            border: none;
+        }
+
+            .form-card .card-header h4 {
+                font-weight: 700;
+                font-size: 1.5rem;
+                margin: 0;
+                color: white;
+            }
+
+    .form-control-lg {
+        padding: 1rem 1.4rem;
+        font-size: 1.1rem;
+        border-radius: 14px;
+        border: 2px solid #d1d5db;
+        transition: all 0.3s ease;
+    }
+
+        .form-control-lg:focus {
+            border-color: var(--success);
+            box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.2);
+        }
+
+    .btn-action {
+        padding: 0.85rem 2rem;
+        font-weight: 600;
+        border-radius: 50px;
+        font-size: 1.05rem;
+        transition: all 0.35s ease;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+        .btn-action:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        }
+
+    .btn-secondary {
+        background: #6b7280;
+        border: none;
+    }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+</style>
+
+<div class="container-fluid px-4 mt-4">
+
+    <!-- Form thêm danh mục -->
+    <div class="form-card">
+        <div class="card-header text-white text-center">
+            <h4>Thêm danh mục mới</h4>
+        </div>
+        <div class="card-body p-5">
+            <form asp-action="Create" method="post" class="needs-validation" novalidate>
+                <div class="mb-4">
+                    <label asp-for="Name" class="form-label fw-bold text-success fs-5">Tên danh mục</label>
+                    <input asp-for="Name"
+                           class="form-control form-control-lg"
+                           placeholder="Ví dụ: Môi trường, Giáo dục, Sức khỏe, Từ thiện..."
+                           required />
+                    <div class="invalid-feedback">
+                        Vui lòng nhập tên danh mục!
+                    </div>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <hr class="my-5">
+
+                <div class="d-flex flex-column flex-md-row gap-3 justify-content-end">
+                    <a asp-action="Index" class="btn btn-secondary btn-action order-md-1">
+                        Quay lại danh sách
+                    </a>
+                    <button type="submit" class="btn btn-success btn-action px-5">
+                        Thêm danh mục
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Bootstrap 5 form validation
+        (function () {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+}

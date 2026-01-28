@@ -1,0 +1,721 @@
+﻿@model TinhNguyenXanh.Models.Donation
+@{
+    ViewData["Title"] = "Ủng hộ qua MoMo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary-color: #16a34a;
+        --primary-hover: #15803d;
+        --accent-light: #fdf2f8;
+        --text-dark: #0f172a;
+        --text-muted: #64748b;
+        --border-color: #e5e7eb;
+        --bg-light: #ffffff;
+    }
+
+    .donate-section {
+        background: #ffffff;
+        min-height: 100vh;
+        padding: 5rem 0;
+    }
+
+    /* Header Section */
+    .donate-header {
+        text-align: center;
+        margin-bottom: 4rem;
+        animation: fadeInDown 0.6s ease-out;
+    }
+
+        .donate-header h2 {
+            color: var(--text-dark);
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+            .donate-header h2::after {
+                content: '';
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 4px;
+                background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+                border-radius: 2px;
+            }
+
+        .donate-header p {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            max-width: 700px;
+            margin: 2rem auto 0;
+            line-height: 1.7;
+        }
+
+    .momo-logo {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1rem;
+        display: block;
+        filter: drop-shadow(0 4px 12px rgba(216, 45, 139, 0.2));
+    }
+
+    /* Stats Section */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 4rem;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        color: white;
+        box-shadow: 0 8px 24px rgba(216, 45, 139, 0.3);
+        transition: all 0.3s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(216, 45, 139, 0.4);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+    /* Donation Form */
+    .donation-form-card {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        animation: fadeInLeft 0.8s ease-out;
+    }
+
+        .donation-form-card h4 {
+            color: var(--text-dark);
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+    /* Amount Selection */
+    .amount-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .amount-option {
+        position: relative;
+    }
+
+        .amount-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .amount-option label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            background: white;
+        }
+
+        .amount-option input[type="radio"]:checked + label {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(216, 45, 139, 0.3);
+        }
+
+        .amount-option label:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+    .custom-amount {
+        margin-top: 1rem;
+    }
+
+        .custom-amount input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            .custom-amount input:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(216, 45, 139, 0.1);
+            }
+
+    /* Form Fields */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+        .form-group label {
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+            .form-group input:focus,
+            .form-group select:focus,
+            .form-group textarea:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(216, 45, 139, 0.1);
+            }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+    /* Submit Button */
+    .btn-donate {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+        .btn-donate:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(216, 45, 139, 0.4);
+        }
+
+        .btn-donate:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-donate i {
+            font-size: 1.25rem;
+        }
+
+    /* Info Card */
+    .donation-info-card {
+        background: linear-gradient(135deg, #ffffff 0%, var(--accent-light) 100%);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        animation: fadeInRight 0.8s ease-out;
+        position: sticky;
+        top: 2rem;
+    }
+
+        .donation-info-card h4 {
+            color: var(--text-dark);
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+    .info-block {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+        .info-block h6 {
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .info-block h6 i {
+                color: var(--primary-color);
+                font-size: 1.25rem;
+            }
+
+        .info-block p {
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        .info-block ul {
+            margin: 0;
+            padding-left: 1.5rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+    .qr-code-box {
+        background: white;
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+        .qr-code-box img {
+            width: 200px;
+            height: 200px;
+            margin: 1rem auto;
+            display: block;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .qr-code-box p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0.5rem 0 0 0;
+        }
+
+    /* Loading Overlay */
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(8px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+        z-index: 10;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+        border-width: 0.3rem;
+        color: var(--primary-color);
+    }
+
+    .loading-overlay p {
+        color: var(--text-muted);
+        font-weight: 500;
+        margin-top: 1rem;
+        font-size: 1rem;
+    }
+
+    /* Animations */
+    @@keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive */
+    @@media (max-width: 991px) {
+        .donate-header h2 {
+            font-size: 2rem;
+        }
+
+        .donation-form-card,
+        .donation-info-card {
+            padding: 2rem;
+        }
+
+        .donation-info-card {
+            position: static;
+            margin-top: 2rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .amount-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .stats-container {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .donate-section {
+            padding: 3rem 0;
+        }
+
+        .donate-header {
+            margin-bottom: 3rem;
+        }
+
+            .donate-header h2 {
+                font-size: 1.75rem;
+            }
+
+            .donate-header p {
+                font-size: 1rem;
+            }
+
+        .donation-form-card,
+        .donation-info-card {
+            padding: 1.5rem;
+        }
+
+        .amount-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<section class="donate-section">
+    <div class="container">
+        <!-- Header -->
+        <div class="donate-header">
+            @* <img src="https://developers.momo.vn/v3/assets/images/logo.png" alt="MoMo Logo" class="momo-logo" /> *@
+            <img src="~/images/momo-logo.png" alt="MoMo Logo" class="momo-logo" />
+            <h2>ỦNG HỘ QUA VÍ MOMO</h2>
+            <p>
+                Thanh toán nhanh chóng, an toàn và tiện lợi. Mỗi đóng góp của bạn là một hạt giống lan tỏa yêu thương.
+            </p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <i class="bi bi-people-fill"></i>
+                <h3>1,234</h3>
+                <p>Nhà hảo tâm</p>
+            </div>
+            <div class="stat-card">
+                <i class="bi bi-currency-dollar"></i>
+                <h3>5.2 tỷ</h3>
+                <p>Đồng quyên góp</p>
+            </div>
+            <div class="stat-card">
+                <i class="bi bi-heart-fill"></i>
+                <h3>89</h3>
+                <p>Dự án hoàn thành</p>
+            </div>
+            <div class="stat-card">
+                <i class="bi bi-tree-fill"></i>
+                <h3>15,678</h3>
+                <p>Cây xanh trồng</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Donation Form -->
+            <div class="col-lg-7 mb-4">
+                <div class="donation-form-card position-relative">
+                    <h4>
+                        <i class="bi bi-wallet2 me-2"></i>Thông Tin Ủng Hộ
+                    </h4>
+
+                    <form asp-action="CreateMomoPayment" asp-controller="Home" method="post" id="momoForm">
+                        <!-- Amount Selection -->
+                        <div class="mb-4">
+                            <label class="mb-3 d-block">Chọn số tiền ủng hộ:</label>
+                            <div class="amount-grid">
+                                <div class="amount-option">
+                                    <input type="radio" id="amount20" name="amountOption" value="20000">
+                                    <label for="amount20">20,000đ</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" id="amount50" name="amountOption" value="50000">
+                                    <label for="amount50">50,000đ</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" id="amount100" name="amountOption" value="100000" checked>
+                                    <label for="amount100">100,000đ</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" id="amount200" name="amountOption" value="200000">
+                                    <label for="amount200">200,000đ</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" id="amount500" name="amountOption" value="500000">
+                                    <label for="amount500">500,000đ</label>
+                                </div>
+                                <div class="amount-option">
+                                    <input type="radio" id="amountCustom" name="amountOption" value="custom">
+                                    <label for="amountCustom">Khác</label>
+                                </div>
+                            </div>
+                            <div class="custom-amount" id="customAmountField" style="display: none;">
+                                <input type="number" id="customAmountInput" placeholder="Nhập số tiền (VNĐ)" min="1000" step="1000">
+                            </div>
+                        </div>
+
+                        <!-- Hidden field for actual amount -->
+                        <input type="hidden" asp-for="Amount" id="actualAmount" value="100000" />
+
+                        <!-- Personal Info -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="donorName">Họ và Tên <span class="text-danger">*</span></label>
+                                    <input asp-for="DonorName" type="text" id="donorName" required placeholder="Nguyễn Văn A">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="donorPhone">Số Điện Thoại</label>
+                                    <input asp-for="PhoneNumber" type="tel" id="donorPhone" placeholder="0123 456 789 (Không bắt buộc)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="donorMessage">Lời nhắn (Tùy chọn)</label>
+                            <textarea asp-for="Message" id="donorMessage" placeholder="Gửi lời động viên đến CLB Tình Nguyện Xanh..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-donate" id="btnPay">
+                            <i class="bi bi-wallet2"></i>
+                            Thanh Toán Qua MoMo
+                        </button>
+                    </form>
+
+                    <div id="loadingOverlay" class="loading-overlay">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p>Đang kết nối tới MoMo, vui lòng đợi...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Donation Info -->
+            <div class="col-lg-5 mb-4">
+                <div class="donation-info-card">
+                    <h4>
+                        <i class="bi bi-info-circle-fill me-2"></i>Thông Tin
+                    </h4>
+
+                    <div class="info-block">
+                        <h6>
+                            <i class="bi bi-lightning-charge-fill"></i>
+                            Thanh Toán Nhanh Chóng
+                        </h6>
+                        <p>
+                            Chỉ cần vài thao tác đơn giản, bạn có thể hoàn tất việc ủng hộ trong vòng 30 giây với ví MoMo.
+                        </p>
+                    </div>
+
+                    <div class="info-block">
+                        <h6>
+                            <i class="bi bi-shield-check"></i>
+                            An Toàn & Bảo Mật
+                        </h6>
+                        <p>
+                            Mọi giao dịch đều được mã hóa và bảo mật tuyệt đối. Thông tin cá nhân của bạn được bảo vệ an toàn.
+                        </p>
+                    </div>
+
+                    <div class="info-block">
+                        <h6>
+                            <i class="bi bi-graph-up-arrow"></i>
+                            Tác Động Của Bạn
+                        </h6>
+                        <p>Đóng góp của bạn sẽ giúp:</p>
+                        <ul>
+                            <li>Hỗ trợ học bổng cho trẻ em nghèo</li>
+                            <li>Bảo vệ môi trường và trồng cây xanh</li>
+                            <li>Cứu trợ khẩn cấp cho đồng bào thiên tai</li>
+                            <li>Xây dựng cơ sở hạ tầng cho vùng sâu vùng xa</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-block">
+                        <h6>
+                            <i class="bi bi-receipt"></i>
+                            Xác Nhận Đóng Góp
+                        </h6>
+                        <p>
+                            Bạn sẽ nhận được email xác nhận ngay sau khi hoàn tất thanh toán. Chứng từ hợp lệ sẽ được gửi để khấu trừ thuế (nếu áp dụng).
+                        </p>
+                    </div>
+
+                  @*   <div class="qr-code-box">
+                        <h6 class="text-dark fw-bold mb-2">
+                            <i class="bi bi-qr-code me-2"></i>Quét mã QR để ủng hộ
+                        </h6>
+                        <img src="https://via.placeholder.com/200x200?text=MoMo+QR+Code" alt="MoMo QR Code" />
+                        <p>Hoặc điền form bên cạnh để thanh toán</p>
+                    </div> *@
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Custom amount toggle
+        document.querySelectorAll('input[name="amountOption"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                const customField = document.getElementById('customAmountField');
+                const actualAmountField = document.getElementById('actualAmount');
+
+                if (this.value === 'custom') {
+                    customField.style.display = 'block';
+                    document.getElementById('customAmountInput').focus();
+                } else {
+                    customField.style.display = 'none';
+                    actualAmountField.value = this.value;
+                }
+            });
+        });
+
+        // Update actual amount when custom input changes
+        document.getElementById('customAmountInput').addEventListener('input', function() {
+            document.getElementById('actualAmount').value = this.value;
+        });
+
+        // Form submission
+        document.getElementById('momoForm').addEventListener('submit', function (e) {
+            // Validate amount
+            const selectedAmount = document.querySelector('input[name="amountOption"]:checked');
+            const actualAmount = document.getElementById('actualAmount');
+
+            if (selectedAmount.value === 'custom') {
+                const customAmount = document.getElementById('customAmountInput').value;
+                if (!customAmount || customAmount < 1000) {
+                    e.preventDefault();
+                    alert('Vui lòng nhập số tiền tối thiểu 1,000đ');
+                    return;
+                }
+                actualAmount.value = customAmount;
+            }
+
+            // Show loading overlay
+            const btn = document.getElementById('btnPay');
+            const overlay = document.getElementById('loadingOverlay');
+
+            btn.disabled = true;
+            overlay.classList.add('active');
+        });
+    </script>
+}
