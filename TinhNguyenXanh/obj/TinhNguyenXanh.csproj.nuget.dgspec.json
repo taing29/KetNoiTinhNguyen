@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Hoc Tap\\VS\\DACNN\\TinhNguyenXanh\\TinhNguyenXanh.csproj": {}
+    "D:\\Hoc Tap\\VS\\DACN\\TinhNguyenXanh\\TinhNguyenXanh.csproj": {}
   },
   "projects": {
-    "D:\\Hoc Tap\\VS\\DACNN\\TinhNguyenXanh\\TinhNguyenXanh.csproj": {
+    "D:\\Hoc Tap\\VS\\DACN\\TinhNguyenXanh\\TinhNguyenXanh.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Hoc Tap\\VS\\DACNN\\TinhNguyenXanh\\TinhNguyenXanh.csproj",
+        "projectUniqueName": "D:\\Hoc Tap\\VS\\DACN\\TinhNguyenXanh\\TinhNguyenXanh.csproj",
         "projectName": "TinhNguyenXanh",
-        "projectPath": "D:\\Hoc Tap\\VS\\DACNN\\TinhNguyenXanh\\TinhNguyenXanh.csproj",
+        "projectPath": "D:\\Hoc Tap\\VS\\DACN\\TinhNguyenXanh\\TinhNguyenXanh.csproj",
         "packagesPath": "C:\\Users\\tainguyen\\.nuget\\packages\\",
-        "outputPath": "D:\\Hoc Tap\\VS\\DACNN\\TinhNguyenXanh\\obj\\",
+        "outputPath": "D:\\Hoc Tap\\VS\\DACN\\TinhNguyenXanh\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
